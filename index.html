@@ -1,0 +1,1581 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <!-- 優化 Viewport 設定：禁止縮放，更像 App 的體驗 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>快樂聖誕節 - 一年級互動教學</title>
+    
+    <!-- 引入 Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- 引入可愛圓體 -->
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&display=swap" rel="stylesheet">
+    
+    <!-- Markdown 解析 -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    
+    <!-- 引入 PDF 相關工具 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <style>
+        body {
+            font-family: 'Zen Maru Gothic', sans-serif;
+            background-color: #FFF5F5;
+            overflow-x: hidden;
+            min-height: 100vh;
+            /* 防止 iOS Safari 彈性捲動效果 */
+            overscroll-behavior: none;
+            /* 優化點擊高亮顏色 */
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* --- 專業國小注音 CSS (嚴格保留) --- */
+        .z-block {
+            display: inline-flex;
+            align-items: center;
+            margin: 0 2px;
+            vertical-align: bottom;
+        }
+
+        .z-char {
+            line-height: 1;
+        }
+
+        .z-bopomofo {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin-left: 4px;
+            position: relative;
+            width: 1em;
+            height: 100%;
+            font-size: 1em;
+        }
+
+        .z-bo-symbol {
+            font-family: sans-serif;
+            font-weight: normal;
+            line-height: 1;
+            font-size: 0.4em;
+            transform: scale(1.1);
+        }
+
+        .z-tone {
+            position: absolute;
+            font-family: sans-serif;
+            font-weight: bold;
+            line-height: 1;
+        }
+
+        .z-tone-5 {
+            font-size: 0.5em;
+            top: -0.6em;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .z-tone-right {
+            font-size: 0.8em;
+            right: -0.5em;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        /* 標題文字特效 */
+        .title-text {
+            color: #D42426;
+            text-shadow: 2px 2px 0px #165B33, 4px 4px 0px #F8B229;
+        }
+        .title-text .z-bopomofo {
+            color: #D42426;
+            text-shadow: none;
+            font-weight: bold;
+        }
+
+        /* 浮水印樣式 */
+        .watermark {
+            background-color: #FEE2E2;
+            color: #991B1B;
+            text-align: center;
+            padding: 8px;
+            font-weight: bold;
+            border-bottom: 2px solid #FCA5A5;
+            font-size: 0.9rem;
+        }
+
+        /* 飄雪特效 */
+        .snowflake {
+            position: fixed;
+            top: -10px;
+            color: white;
+            font-size: 1em;
+            text-shadow: 0 0 5px #000;
+            user-select: none;
+            z-index: 9999;
+            pointer-events: none;
+            animation-name: fall;
+            animation-timing-function: linear;
+            animation-iteration-count: infinite;
+        }
+        @keyframes fall { to { transform: translateY(100vh); } }
+
+        /* 翻翻卡特效 */
+        .flip-card { perspective: 1000px; cursor: pointer; }
+        .flip-card-inner {
+            position: relative; width: 100%; height: 100%; text-align: center;
+            transition: transform 0.6s; transform-style: preserve-3d;
+        }
+        .flip-card.flipped .flip-card-inner { transform: rotateY(180deg); }
+        .flip-card-front, .flip-card-back {
+            position: absolute; width: 100%; height: 100%;
+            -webkit-backface-visibility: hidden; backface-visibility: hidden;
+            border-radius: 1rem; display: flex; align-items: center; justify-content: center;
+            flex-direction: column; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        .flip-card-front { background-color: white; border: 4px solid #165B33; }
+        .flip-card-back { background-color: #D42426; color: white; transform: rotateY(180deg); border: 4px solid #F8B229; }
+
+        /* 遊戲裝飾品 (拖曳用) - 優化觸控區 */
+        .draggable-source {
+            cursor: grab;
+            transition: transform 0.1s;
+            touch-action: none;
+            user-select: none;
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            padding: 8px;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .draggable-source:active {
+            cursor: grabbing;
+            background-color: rgba(255, 255, 255, 0.6);
+            transform: scale(1.1);
+        }
+        
+        .tree-decoration {
+            position: absolute;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            animation: popIn 0.3s ease-out;
+            font-size: 2.5rem; 
+        }
+        @keyframes popIn {
+            0% { transform: translate(-50%, -50%) scale(0); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+
+        /* AI 載入動畫 */
+        .thinking-dots::after { content: ' .'; animation: dots 1.5s steps(5, end) infinite; }
+        @keyframes dots {
+            0%, 20% { content: ' .'; }
+            40% { content: ' ..'; }
+            60% { content: ' ...'; }
+            80%, 100% { content: ' ....'; }
+        }
+
+        /* 影片封面 */
+        .video-cover { cursor: pointer; position: relative; }
+        .video-cover::after {
+            content: '▶'; position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%); font-size: 4rem; color: white;
+            background-color: rgba(220, 38, 38, 0.8); width: 80px; height: 80px;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3); transition: all 0.3s ease;
+        }
+        .video-cover:hover::after { background-color: rgba(220, 38, 38, 1); transform: translate(-50%, -50%) scale(1.1); }
+
+        /* 接禮物遊戲 Canvas */
+        #gameCanvas {
+            background: linear-gradient(to bottom, #0f2027, #203a43, #2c5364);
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            cursor: pointer;
+            max-width: 100%;
+            touch-action: none;
+        }
+
+        /* 繪畫遊戲 Canvas */
+        #paintCanvas {
+            background-color: white;
+            border-radius: 1rem;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.1);
+            cursor: crosshair;
+            touch-action: none;
+        }
+
+        /* 記憶翻翻樂 Grid */
+        .memory-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px; 
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .memory-card {
+            aspect-ratio: 1;
+            background-color: #D42426;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: transparent;
+            transition: transform 0.2s, background-color 0.2s;
+            border: 3px solid #F8B229;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .memory-card.flipped, .memory-card.matched {
+            background-color: white;
+            color: black;
+            transform: rotateY(180deg);
+        }
+        
+        /* 說話波形動畫 */
+        .speaking-wave {
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+            height: 20px;
+        }
+        .bar {
+            width: 4px;
+            background: #F8B229;
+            animation: speak 0.5s infinite ease-in-out;
+        }
+        .bar:nth-child(1) { animation-delay: 0.1s; height: 10px; }
+        .bar:nth-child(2) { animation-delay: 0.2s; height: 15px; }
+        .bar:nth-child(3) { animation-delay: 0.3s; height: 20px; }
+        @keyframes speak {
+            0%, 100% { transform: scaleY(1); }
+            50% { transform: scaleY(1.5); }
+        }
+        
+        /* 畫筆選擇器 */
+        .color-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        .color-btn.active {
+            transform: scale(1.2);
+            border-color: #FCD34D;
+        }
+
+        /* --- SPA 頁面切換 --- */
+        .page-section {
+            display: none;
+            animation: fadeIn 0.5s;
+            padding-bottom: 40px;
+        }
+        .page-section.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 選單卡片樣式 */
+        .menu-card {
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+        .menu-card:active {
+            transform: scale(0.98);
+        }
+        .menu-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        
+        /* 已玩過標記 */
+        .played-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #10B981;
+            color: white;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            opacity: 0;
+            transform: scale(0);
+            transition: all 0.3s;
+        }
+        .menu-card.played .played-badge {
+            opacity: 1;
+            transform: scale(1);
+        }
+        .menu-card.played {
+            border-color: #10B981 !important;
+            background-color: #ECFDF5 !important;
+        }
+
+        /* 遊戲控制按鈕優化 */
+        .game-ctrl-btn {
+            width: 80px;
+            height: 80px;
+            font-size: 2.5rem;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s;
+            touch-action: manipulation;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        .game-ctrl-btn:active {
+            background-color: rgba(255, 255, 255, 0.6);
+        }
+
+    </style>
+</head>
+<body class="relative select-none">
+
+    <!-- 1. 浮水印 -->
+    <div class="watermark">
+        薇糖紹冰的教學日誌- 黃薇老師設計、紹群老師調整
+    </div>
+
+    <!-- 背景裝飾 -->
+    <div class="fixed inset-0 pointer-events-none z-0 opacity-20" style="background-image: radial-gradient(#165B33 1px, transparent 1px); background-size: 30px 30px;"></div>
+
+    <!-- 導覽列 -->
+    <nav class="bg-red-600 text-white p-4 sticky top-0 z-50 shadow-lg border-b-4 border-yellow-400">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-black tracking-wider flex items-center gap-2 cursor-pointer active:opacity-80" onclick="goHome()">
+                🎄 
+                <!-- 快樂聖誕節 (注音保留) -->
+                <div class="hidden md:block">
+                    <span class="z-block"><span class="z-char">快</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄎ</span><span class="z-bo-symbol">ㄨ</span><span class="z-bo-symbol">ㄞ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                    <span class="z-block"><span class="z-char">樂</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄌ</span><span class="z-bo-symbol">ㄜ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                    <span class="z-block"><span class="z-char">聖</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄕ</span><span class="z-bo-symbol">ㄥ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                    <span class="z-block"><span class="z-char">誕</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄉ</span><span class="z-bo-symbol">ㄢ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                    <span class="z-block"><span class="z-char">節</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄐ</span><span class="z-bo-symbol">ㄧ</span><span class="z-bo-symbol">ㄝ</span><span class="z-tone z-tone-right">ˊ</span></span></span>
+                </div>
+                <div class="md:hidden">快樂聖誕節</div>
+            </h1>
+            
+            <div class="flex items-center gap-3">
+                <span id="navStudentName" class="font-bold text-yellow-200 hidden"></span>
+                <div class="text-sm bg-white/20 px-4 py-2 rounded-full flex items-center">
+                    <span class="hidden md:inline">
+                        <span class="z-block"><span class="z-char">一</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄧ</span></span></span>
+                        <span class="z-block"><span class="z-char">年</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄋ</span><span class="z-bo-symbol">ㄧ</span><span class="z-bo-symbol">ㄢ</span><span class="z-tone z-tone-right">ˊ</span></span></span>
+                        <span class="z-block"><span class="z-char">級</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄐ</span><span class="z-bo-symbol">ㄧ</span><span class="z-tone z-tone-right">ˊ</span></span></span>
+                    </span>
+                    <span class="md:hidden">一年級</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要內容區 -->
+    <main class="container mx-auto p-4 md:p-8 relative z-10 max-w-5xl min-h-[80vh]">
+
+        <!-- ==================== 頁面 1: 歡迎登入頁 ==================== -->
+        <div id="page-welcome" class="page-section active flex flex-col items-center justify-center pt-10">
+            <div class="text-7xl mb-8 bounce-animation">🎅</div>
+            <h2 class="text-5xl font-bold mb-8 text-red-700 title-text">
+                <span class="z-block"><span class="z-char">歡</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄏ</span><span class="z-bo-symbol">ㄨ</span><span class="z-bo-symbol">ㄢ</span></span></span>
+                <span class="z-block"><span class="z-char">迎</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄧ</span><span class="z-bo-symbol">ㄥ</span><span class="z-tone z-tone-right">ˊ</span></span></span>
+                <span class="z-block"><span class="z-char">光</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄍ</span><span class="z-bo-symbol">ㄨ</span><span class="z-bo-symbol">ㄤ</span></span></span>
+                <span class="z-block"><span class="z-char">臨</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄌ</span><span class="z-bo-symbol">ㄧ</span><span class="z-bo-symbol">ㄣ</span><span class="z-tone z-tone-right">ˊ</span></span></span>
+            </h2>
+            
+            <div class="bg-white p-10 rounded-[2rem] shadow-2xl border-4 border-green-600 max-w-md w-full text-center">
+                <label class="block text-2xl font-bold text-green-800 mb-6">
+                    <span class="z-block"><span class="z-char">請</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄑ</span><span class="z-bo-symbol">ㄧ</span><span class="z-bo-symbol">ㄥ</span><span class="z-tone z-tone-right">ˇ</span></span></span>
+                    <span class="z-block"><span class="z-char">輸</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄕ</span><span class="z-bo-symbol">ㄨ</span></span></span>
+                    <span class="z-block"><span class="z-char">入</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄖ</span><span class="z-bo-symbol">ㄨ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                    <span class="z-block"><span class="z-char">名</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄇ</span><span class="z-bo-symbol">ㄧ</span><span class="z-bo-symbol">ㄥ</span><span class="z-tone z-tone-right">ˊ</span></span></span>
+                    <span class="z-block"><span class="z-char">字</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄗ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                </label>
+                <input type="text" id="studentNameInput" class="w-full text-3xl p-5 text-center border-4 border-gray-200 rounded-2xl mb-8 focus:border-red-500 focus:outline-none" placeholder="你的名字">
+                <button onclick="login()" class="w-full bg-red-600 hover:bg-red-700 text-white text-2xl font-bold py-5 rounded-2xl shadow-lg transform active:scale-95 transition">
+                    <span class="z-block"><span class="z-char">開</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄎ</span><span class="z-bo-symbol">ㄞ</span></span></span>
+                    <span class="z-block"><span class="z-char">始</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄕ</span><span class="z-tone z-tone-right">ˇ</span></span></span>
+                    <span class="z-block"><span class="z-char">上</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄕ</span><span class="z-bo-symbol">ㄤ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                    <span class="z-block"><span class="z-char">課</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄎ</span><span class="z-bo-symbol">ㄜ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                    🚀
+                </button>
+            </div>
+        </div>
+
+        <!-- ==================== 頁面 2: 遊戲選單頁 ==================== -->
+        <div id="page-menu" class="page-section text-center">
+            <h2 class="text-4xl md:text-5xl font-black title-text mb-8 mt-4">
+                <span class="z-block"><span class="z-char">請</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄑ</span><span class="z-bo-symbol">ㄧ</span><span class="z-bo-symbol">ㄥ</span><span class="z-tone z-tone-right">ˇ</span></span></span>
+                <span class="z-block"><span class="z-char">選</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄒ</span><span class="z-bo-symbol">ㄩ</span><span class="z-bo-symbol">ㄢ</span><span class="z-tone z-tone-right">ˇ</span></span></span>
+                <span class="z-block"><span class="z-char">擇</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄗ</span><span class="z-bo-symbol">ㄜ</span><span class="z-tone z-tone-right">ˊ</span></span></span>
+                <span class="z-block"><span class="z-char">活</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄏ</span><span class="z-bo-symbol">ㄨ</span><span class="z-bo-symbol">ㄛ</span><span class="z-tone z-tone-right">ˊ</span></span></span>
+                <span class="z-block"><span class="z-char">動</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄉ</span><span class="z-bo-symbol">ㄨ</span><span class="z-bo-symbol">ㄥ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto px-4">
+                
+                <div class="menu-card bg-white p-6 rounded-3xl shadow-xl border-4 border-red-200 cursor-pointer" onclick="goToSection('section-videos')" id="menu-section-videos">
+                    <div class="played-badge">✓</div>
+                    <div class="text-6xl mb-4">📺</div>
+                    <h3 class="text-2xl font-bold text-gray-800">
+                        <span class="z-block"><span class="z-char">小</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄒ</span><span class="z-bo-symbol">ㄧ</span><span class="z-bo-symbol">ㄠ</span><span class="z-tone z-tone-right">ˇ</span></span></span>
+                        <span class="z-block"><span class="z-char">小</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄒ</span><span class="z-bo-symbol">ㄧ</span><span class="z-bo-symbol">ㄠ</span><span class="z-tone z-tone-right">ˇ</span></span></span>
+                        <span class="z-block"><span class="z-char">電</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄉ</span><span class="z-bo-symbol">ㄧ</span><span class="z-bo-symbol">ㄢ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                        <span class="z-block"><span class="z-char">影</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄧ</span><span class="z-bo-symbol">ㄥ</span><span class="z-tone z-tone-right">ˇ</span></span></span>
+                        <span class="z-block"><span class="z-char">院</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄩ</span><span class="z-bo-symbol">ㄢ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                    </h3>
+                    <div class="text-lg font-bold text-gray-400 font-sans mt-1">Mini Cinema</div>
+                    <p class="text-gray-500 mt-2">看聖誕節的故事影片</p>
+                </div>
+
+                <div class="menu-card bg-white p-6 rounded-3xl shadow-xl border-4 border-red-500 cursor-pointer" onclick="goToSection('section-chat')" id="menu-section-chat">
+                    <div class="played-badge">✓</div>
+                    <div class="text-6xl mb-4">🎅</div>
+                    <h3 class="text-2xl font-bold text-red-600">
+                        <span class="z-block"><span class="z-char">跟</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄍ</span><span class="z-bo-symbol">ㄣ</span></span></span>
+                        <span class="z-block"><span class="z-char">聖</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄕ</span><span class="z-bo-symbol">ㄥ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                        <span class="z-block"><span class="z-char">誕</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄉ</span><span class="z-bo-symbol">ㄢ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                        <span class="z-block"><span class="z-char">老</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄌ</span><span class="z-bo-symbol">ㄠ</span><span class="z-tone z-tone-right">ˇ</span></span></span>
+                        <span class="z-block"><span class="z-char">公</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄍ</span><span class="z-bo-symbol">ㄨ</span><span class="z-bo-symbol">ㄥ</span></span></span>
+                        <span class="z-block"><span class="z-char">公</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄍ</span><span class="z-bo-symbol">ㄨ</span><span class="z-bo-symbol">ㄥ</span></span></span>
+                        <span class="z-block"><span class="z-char">聊</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄌ</span><span class="z-bo-symbol">ㄧ</span><span class="z-bo-symbol">ㄠ</span><span class="z-tone z-tone-right">ˊ</span></span></span>
+                        <span class="z-block"><span class="z-char">天</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄊ</span><span class="z-bo-symbol">ㄧ</span><span class="z-bo-symbol">ㄢ</span></span></span>
+                    </h3>
+                    <div class="text-lg font-bold text-red-400 font-sans mt-1">Chat with Santa</div>
+                    <p class="text-gray-500 mt-2">問問題或許願望</p>
+                </div>
+
+                <div class="menu-card bg-white p-6 rounded-3xl shadow-xl border-4 border-blue-400 cursor-pointer" onclick="goToSection('section-flashcards')" id="menu-section-flashcards">
+                    <div class="played-badge">✓</div>
+                    <div class="text-6xl mb-4">🔍</div>
+                    <h3 class="text-2xl font-bold text-blue-600">
+                        <span class="z-block"><span class="z-char">知</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄓ</span></span></span>
+                        <span class="z-block"><span class="z-char">識</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄕ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                        <span class="z-block"><span class="z-char">翻</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄈ</span><span class="z-bo-symbol">ㄢ</span></span></span>
+                        <span class="z-block"><span class="z-char">翻</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄈ</span><span class="z-bo-symbol">ㄢ</span></span></span>
+                        <span class="z-block"><span class="z-char">卡</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄎ</span><span class="z-bo-symbol">ㄚ</span><span class="z-tone z-tone-right">ˇ</span></span></span>
+                    </h3>
+                    <div class="text-lg font-bold text-blue-400 font-sans mt-1">Flashcards</div>
+                    <p class="text-gray-500 mt-2">認識聖誕節物品</p>
+                </div>
+
+                <div class="menu-card bg-white p-6 rounded-3xl shadow-xl border-4 border-green-600 cursor-pointer" onclick="goToSection('section-game1')" id="menu-section-game1">
+                    <div class="played-badge">✓</div>
+                    <div class="text-6xl mb-4">🎄</div>
+                    <h3 class="text-2xl font-bold text-green-700">
+                        <span class="z-block"><span class="z-char">裝</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄓ</span><span class="z-bo-symbol">ㄨ</span><span class="z-bo-symbol">ㄤ</span></span></span>
+                        <span class="z-block"><span class="z-char">飾</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄕ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                        <span class="z-block"><span class="z-char">聖</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄕ</span><span class="z-bo-symbol">ㄥ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                        <span class="z-block"><span class="z-char">誕</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄉ</span><span class="z-bo-symbol">ㄢ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                        <span class="z-block"><span class="z-char">樹</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄕ</span><span class="z-bo-symbol">ㄨ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                    </h3>
+                    <div class="text-lg font-bold text-green-500 font-sans mt-1">Decorate the Tree</div>
+                    <p class="text-gray-500 mt-2">把裝飾品掛上去</p>
+                </div>
+
+                <div class="menu-card bg-white p-6 rounded-3xl shadow-xl border-4 border-blue-600 cursor-pointer" onclick="goToSection('section-game2')" id="menu-section-game2">
+                    <div class="played-badge">✓</div>
+                    <div class="text-6xl mb-4">🃏</div>
+                    <h3 class="text-2xl font-bold text-blue-700">
+                        <span class="z-block"><span class="z-char">記</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄐ</span><span class="z-bo-symbol">ㄧ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                        <span class="z-block"><span class="z-char">憶</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄧ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                        <span class="z-block"><span class="z-char">翻</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄈ</span><span class="z-bo-symbol">ㄢ</span></span></span>
+                        <span class="z-block"><span class="z-char">翻</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄈ</span><span class="z-bo-symbol">ㄢ</span></span></span>
+                        <span class="z-block"><span class="z-char">樂</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄌ</span><span class="z-bo-symbol">ㄜ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                    </h3>
+                    <div class="text-lg font-bold text-blue-500 font-sans mt-1">Memory Game</div>
+                    <p class="text-gray-500 mt-2">考驗你的記憶力</p>
+                </div>
+
+                <div class="menu-card bg-white p-6 rounded-3xl shadow-xl border-4 border-purple-400 cursor-pointer" onclick="goToSection('section-game3')" id="menu-section-game3">
+                    <div class="played-badge">✓</div>
+                    <div class="text-6xl mb-4">🎁</div>
+                    <h3 class="text-2xl font-bold text-purple-600">
+                        <span class="z-block"><span class="z-char">接</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄐ</span><span class="z-bo-symbol">ㄧ</span><span class="z-bo-symbol">ㄝ</span></span></span>
+                        <span class="z-block"><span class="z-char">禮</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄌ</span><span class="z-bo-symbol">ㄧ</span><span class="z-tone z-tone-right">ˇ</span></span></span>
+                        <span class="z-block"><span class="z-char">物</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄨ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                        <span class="z-block"><span class="z-char">大</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄉ</span><span class="z-bo-symbol">ㄚ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                        <span class="z-block"><span class="z-char">挑</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄊ</span><span class="z-bo-symbol">ㄧ</span><span class="z-bo-symbol">ㄠ</span></span></span>
+                        <span class="z-block"><span class="z-char">戰</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄓ</span><span class="z-bo-symbol">ㄢ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                    </h3>
+                    <div class="text-lg font-bold text-purple-500 font-sans mt-1">Catch the Gifts</div>
+                    <p class="text-gray-500 mt-2">幫聖誕老人接禮物</p>
+                </div>
+
+                <div class="menu-card bg-white p-6 rounded-3xl shadow-xl border-4 border-orange-400 cursor-pointer" onclick="goToSection('section-game4')" id="menu-section-game4">
+                    <div class="played-badge">✓</div>
+                    <div class="text-6xl mb-4">🎨</div>
+                    <h3 class="text-2xl font-bold text-orange-600">
+                        <span class="z-block"><span class="z-char">彩</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄘ</span><span class="z-bo-symbol">ㄞ</span><span class="z-tone z-tone-right">ˇ</span></span></span>
+                        <span class="z-block"><span class="z-char">繪</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄏ</span><span class="z-bo-symbol">ㄨ</span><span class="z-bo-symbol">ㄟ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                        <span class="z-block"><span class="z-char">聖</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄕ</span><span class="z-bo-symbol">ㄥ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                        <span class="z-block"><span class="z-char">誕</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄉ</span><span class="z-bo-symbol">ㄢ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                        <span class="z-block"><span class="z-char">老</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄌ</span><span class="z-bo-symbol">ㄠ</span><span class="z-tone z-tone-right">ˇ</span></span></span>
+                        <span class="z-block"><span class="z-char">人</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄖ</span><span class="z-bo-symbol">ㄣ</span><span class="z-tone z-tone-right">ˊ</span></span></span>
+                    </h3>
+                    <div class="text-lg font-bold text-orange-500 font-sans mt-1">Paint Santa</div>
+                    <p class="text-gray-500 mt-2">畫出漂亮的顏色</p>
+                </div>
+
+                <div class="menu-card bg-white p-6 rounded-3xl shadow-xl border-4 border-yellow-400 cursor-pointer" onclick="goToSection('section-story')" id="menu-section-story">
+                    <div class="played-badge">✓</div>
+                    <div class="text-6xl mb-4">✨</div>
+                    <h3 class="text-2xl font-bold text-yellow-600">
+                        <span class="z-block"><span class="z-char">魔</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄇ</span><span class="z-bo-symbol">ㄛ</span><span class="z-tone z-tone-right">ˊ</span></span></span>
+                        <span class="z-block"><span class="z-char">法</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄈ</span><span class="z-bo-symbol">ㄚ</span><span class="z-tone z-tone-right">ˇ</span></span></span>
+                        <span class="z-block"><span class="z-char">故</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄍ</span><span class="z-bo-symbol">ㄨ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                        <span class="z-block"><span class="z-char">事</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄕ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                        <span class="z-block"><span class="z-char">機</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄐ</span><span class="z-bo-symbol">ㄧ</span></span></span>
+                    </h3>
+                    <div class="text-lg font-bold text-yellow-500 font-sans mt-1">Magic Story</div>
+                    <p class="text-gray-500 mt-2">AI 變出有趣故事</p>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ==================== 各個功能區塊 ==================== -->
+
+        <!-- 影片學習區 -->
+        <div id="section-videos" class="page-section">
+            <button onclick="goHome()" class="mb-6 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-3 px-8 rounded-full flex items-center gap-2 text-xl shadow-md active:scale-95 transition">
+                🏠 回主選單
+            </button>
+            <section class="mb-16">
+                <div class="flex items-center gap-3 mb-6">
+                    <span class="text-3xl">📺</span>
+                    <h3 class="text-3xl font-bold text-red-700 leading-relaxed">
+                        <span class="z-block"><span class="z-char">小</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄒ</span><span class="z-bo-symbol">ㄧ</span><span class="z-bo-symbol">ㄠ</span><span class="z-tone z-tone-right">ˇ</span></span></span>
+                        <span class="z-block"><span class="z-char">小</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄒ</span><span class="z-bo-symbol">ㄧ</span><span class="z-bo-symbol">ㄠ</span><span class="z-tone z-tone-right">ˇ</span></span></span>
+                        <span class="z-block"><span class="z-char">電</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄉ</span><span class="z-bo-symbol">ㄧ</span><span class="z-bo-symbol">ㄢ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                        <span class="z-block"><span class="z-char">影</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄧ</span><span class="z-bo-symbol">ㄥ</span><span class="z-tone z-tone-right">ˇ</span></span></span>
+                        <span class="z-block"><span class="z-char">院</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄩ</span><span class="z-bo-symbol">ㄢ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                    </h3>
+                </div>
+                
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="bg-white p-4 rounded-3xl shadow-xl border-4 border-green-600 transform hover:-translate-y-1 active:scale-95 transition duration-200">
+                        <div class="video-cover bg-black rounded-2xl overflow-hidden aspect-video relative mb-4" onclick="playVideo(this, 'EEJrFonrE4E', 13)">
+                            <img src="https://i.ytimg.com/vi/EEJrFonrE4E/maxresdefault.jpg" alt="聖誕節的故事影片封面" class="w-full h-full object-cover opacity-90 hover:opacity-100 transition">
+                        </div>
+                        <div class="text-center">
+                            <h4 class="text-2xl font-bold text-green-800 mb-1 leading-relaxed">📖 聖誕故事</h4>
+                        </div>
+                    </div>
+                    <div class="bg-white p-4 rounded-3xl shadow-xl border-4 border-red-500 transform hover:-translate-y-1 active:scale-95 transition duration-200">
+                        <div class="video-cover bg-black rounded-2xl overflow-hidden aspect-video relative mb-4" onclick="playVideo(this, '_c2lbV7n03I')">
+                            <img src="https://i.ytimg.com/vi/_c2lbV7n03I/maxresdefault.jpg" alt="禮物的秘密影片封面" class="w-full h-full object-cover opacity-90 hover:opacity-100 transition">
+                        </div>
+                        <div class="text-center">
+                            <h4 class="text-2xl font-bold text-red-600 mb-1 leading-relaxed">🎁 禮物秘密</h4>
+                        </div>
+                    </div>
+                    <div class="bg-white p-4 rounded-3xl shadow-xl border-4 border-green-600 transform hover:-translate-y-1 active:scale-95 transition duration-200">
+                        <div class="video-cover bg-black rounded-2xl overflow-hidden aspect-video relative mb-4" onclick="playVideo(this, 'WVjsGU5GxUw')">
+                            <img src="https://i.ytimg.com/vi/WVjsGU5GxUw/maxresdefault.jpg" alt="寫信給聖誕老人影片封面" class="w-full h-full object-cover opacity-90 hover:opacity-100 transition">
+                        </div>
+                        <div class="text-center">
+                            <h4 class="text-2xl font-bold text-green-800 mb-1 leading-relaxed">✉️ 寫信給他</h4>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- 聊天室 -->
+        <div id="section-chat" class="page-section">
+            <button onclick="goHome()" class="mb-6 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-3 px-8 rounded-full flex items-center gap-2 text-xl shadow-md active:scale-95 transition">
+                🏠 回主選單
+            </button>
+            <section class="mb-16 bg-red-600 rounded-[2rem] p-6 md:p-10 shadow-2xl border-4 border-white text-white">
+                <div class="flex items-center gap-3 mb-6">
+                    <span class="text-4xl">🎅</span>
+                    <h3 class="text-3xl font-bold leading-relaxed">
+                        <span class="z-block"><span class="z-char">聊</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄌ</span><span class="z-bo-symbol">ㄧ</span><span class="z-bo-symbol">ㄠ</span><span class="z-tone z-tone-right">ˊ</span></span></span>
+                        <span class="z-block"><span class="z-char">聊</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄌ</span><span class="z-bo-symbol">ㄧ</span><span class="z-bo-symbol">ㄠ</span><span class="z-tone z-tone-right">ˊ</span></span></span>
+                        <span class="z-block"><span class="z-char">天</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄊ</span><span class="z-bo-symbol">ㄧ</span><span class="z-bo-symbol">ㄢ</span></span></span> ✨
+                    </h3>
+                </div>
+                
+                <div class="bg-white/10 p-8 rounded-3xl backdrop-blur-sm">
+                    <p class="mb-6 text-2xl leading-loose">
+                        用說的，或是打字，跟我說話！
+                    </p>
+                    <div class="flex flex-col gap-6">
+                        <div class="relative flex-1">
+                            <input type="text" id="santaInput" placeholder="想跟聖誕老公公說什麼？" class="w-full p-6 pr-16 rounded-2xl text-gray-800 text-2xl border-4 border-yellow-400 focus:outline-none focus:border-yellow-300 shadow-inner">
+                            <button onclick="startListening()" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-3xl p-3 hover:bg-gray-100 rounded-full transition" title="用說的">
+                                🎙️
+                            </button>
+                        </div>
+                        <button onclick="askSanta()" class="bg-yellow-400 hover:bg-yellow-300 text-red-700 font-bold py-4 px-8 rounded-2xl shadow-lg transform active:scale-95 transition text-2xl whitespace-nowrap leading-relaxed">
+                            送出 💌
+                        </button>
+                    </div>
+                    
+                    <div id="santaResponse" class="mt-8 bg-white text-gray-800 p-8 rounded-3xl shadow-md hidden">
+                        <div class="flex gap-6 items-start">
+                            <div class="text-5xl flex-shrink-0">🎅</div>
+                            <div class="flex-1">
+                                <div class="flex justify-between items-center mb-4">
+                                    <h4 class="text-xl font-bold text-red-600">聖誕老公公說：</h4>
+                                    <button id="playAudioBtn" onclick="playSantaAudio()" class="hidden flex items-center gap-2 bg-blue-100 hover:bg-blue-200 text-blue-700 px-4 py-2 rounded-full text-lg font-bold transition">
+                                        <span>🔊 聽聖誕老公公說</span>
+                                    </button>
+                                    <div id="audioLoading" class="hidden text-lg text-gray-500 flex items-center gap-2">
+                                        <div class="speaking-wave">
+                                            <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                                        </div>
+                                        準備聲音中...
+                                    </div>
+                                </div>
+                                <div id="santaText" class="text-2xl leading-relaxed"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="santaLoading" class="mt-8 text-center text-2xl font-bold hidden thinking-dots leading-relaxed">
+                        聖誕老公公正在想...
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- 遊戲 1: 裝飾樹 -->
+        <div id="section-game1" class="page-section">
+            <button onclick="goHome()" class="mb-6 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-3 px-8 rounded-full flex items-center gap-2 text-xl shadow-md active:scale-95 transition">
+                🏠 回主選單
+            </button>
+            <section class="mb-12 bg-green-800 rounded-[2rem] p-6 md:p-10 text-white relative overflow-hidden shadow-2xl border-4 border-yellow-400">
+                <div class="text-center mb-4 relative z-10">
+                    <h3 class="text-3xl font-bold mb-2 leading-relaxed">
+                        1. 裝飾聖誕樹
+                    </h3>
+                    <p class="text-lg opacity-80">(用手指把星星、彩球拖到樹上)</p>
+                </div>
+                
+                <div class="relative bg-white/10 rounded-3xl p-4" style="height: 600px; touch-action: none;" id="decorationGameArea">
+                    <div class="absolute left-1/2 transform -translate-x-1/2 bottom-40 w-72 h-96 flex justify-center items-end" id="treeTargetArea">
+                        <div class="w-16 h-20 bg-yellow-900 mx-auto"></div>
+                        <div class="absolute bottom-20 flex flex-col items-center">
+                            <div class="w-0 h-0 border-l-[120px] border-r-[120px] border-b-[120px] border-l-transparent border-r-transparent border-b-green-600 -mb-12"></div>
+                            <div class="w-0 h-0 border-l-[100px] border-r-[100px] border-b-[100px] border-l-transparent border-r-transparent border-b-green-500 -mb-12"></div>
+                            <div class="w-0 h-0 border-l-[80px] border-r-[80px] border-b-[80px] border-l-transparent border-r-transparent border-b-green-400"></div>
+                        </div>
+                    </div>
+
+                    <!-- 底部工具列 -->
+                    <div class="absolute bottom-0 left-0 right-0 h-32 bg-white/20 rounded-b-3xl flex justify-around items-center px-4 z-20 pb-4">
+                        <div class="draggable-source text-5xl" data-type="🌟">🌟</div>
+                        <div class="draggable-source text-4xl" data-type="🔴">🔴</div>
+                        <div class="draggable-source text-4xl" data-type="🔵">🔵</div>
+                        <div class="draggable-source text-4xl" data-type="🎁">🎁</div>
+                        <div class="draggable-source text-4xl" data-type="🎀">🎀</div>
+                        <div class="draggable-source text-4xl" data-type="🐻">🐻</div>
+                        
+                        <div class="flex flex-col gap-2">
+                            <button onclick="clearDecorations()" class="bg-red-500 hover:bg-red-600 text-white text-sm font-bold px-4 py-2 rounded-xl shadow active:scale-95 transition">重來</button>
+                            <button onclick="exportTreePDF()" class="bg-yellow-500 hover:bg-yellow-600 text-white text-sm font-bold px-4 py-2 rounded-xl shadow flex items-center gap-1 active:scale-95 transition">
+                                📥 存檔
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- 遊戲 2: 記憶遊戲 -->
+        <div id="section-game2" class="page-section">
+            <button onclick="goHome()" class="mb-6 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-3 px-8 rounded-full flex items-center gap-2 text-xl shadow-md active:scale-95 transition">
+                🏠 回主選單
+            </button>
+            <section class="mb-12 bg-blue-600 rounded-[2rem] p-6 md:p-10 text-white shadow-2xl border-4 border-white relative">
+                <div class="text-center mb-8">
+                    <h3 class="text-3xl font-bold mb-4">2. 記憶翻翻樂</h3>
+                    <div class="text-2xl font-bold text-yellow-300 mb-4">⏳ 時間: <span id="memoryTimer">60</span></div>
+                    <p class="text-xl mb-4">找出一樣的圖片！</p>
+                    <button onclick="initMemoryGame()" class="bg-white text-blue-700 px-6 py-3 rounded-full font-bold text-lg hover:bg-blue-50 shadow-lg active:scale-95 transition">🔄 重新開始</button>
+                </div>
+                <div class="relative pb-4">
+                    <div class="memory-grid" id="memoryGrid"></div>
+                    <!-- 開始遊戲遮罩 -->
+                    <div id="memoryOverlay" class="absolute inset-0 flex items-center justify-center bg-black/60 rounded-3xl z-10">
+                        <button onclick="startMemoryGame()" class="bg-green-500 hover:bg-green-600 text-white text-3xl font-bold py-6 px-12 rounded-full shadow-2xl transform hover:scale-105 active:scale-95 transition border-4 border-white">
+                            ▶ 開始遊戲
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- 遊戲 3: 接禮物 -->
+        <div id="section-game3" class="page-section">
+            <button onclick="goHome()" class="mb-6 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-3 px-8 rounded-full flex items-center gap-2 text-xl shadow-md active:scale-95 transition">
+                🏠 回主選單
+            </button>
+            <section class="mb-16 bg-purple-700 rounded-[2rem] p-6 md:p-10 text-white shadow-2xl border-4 border-pink-400">
+                <div class="text-center mb-6">
+                    <h3 class="text-3xl font-bold mb-2">3. 接禮物大挑戰</h3>
+                    <p class="text-xl">點擊左右兩邊移動聖誕老人！</p>
+                </div>
+                <div class="relative w-full max-w-2xl mx-auto">
+                    <canvas id="gameCanvas" width="600" height="400" class="w-full rounded-2xl border-4 border-purple-300"></canvas>
+                    <div id="gameOverlay" class="absolute inset-0 flex items-center justify-center bg-black/60 rounded-2xl">
+                        <button onclick="startGame()" class="bg-green-500 hover:bg-green-600 text-white text-3xl font-bold py-6 px-12 rounded-full shadow-2xl transform hover:scale-105 active:scale-95 transition border-4 border-white">
+                            ▶ 開始遊戲
+                        </button>
+                    </div>
+                    <div class="absolute top-4 left-6 text-2xl font-bold bg-black/30 px-4 py-2 rounded-xl">得分: <span id="score">0</span></div>
+                    <div class="absolute top-4 right-6 text-2xl font-bold bg-black/30 px-4 py-2 rounded-xl">⏳ <span id="catchTimer">60</span></div>
+                </div>
+                <div class="flex justify-center gap-8 mt-8 items-center">
+                    <div class="game-ctrl-btn" onmousedown="moveLeft()" onmouseup="stopMove()" ontouchstart="moveLeft()" ontouchend="stopMove()">⬅️</div>
+                    
+                    <button onclick="restartCatchGame()" class="bg-red-500 hover:bg-red-600 text-white font-bold py-4 px-8 rounded-2xl shadow-lg text-xl flex items-center gap-2 active:scale-95 transition border-2 border-white/50">
+                        🔄 重新開始
+                    </button>
+                    
+                    <div class="game-ctrl-btn" onmousedown="moveRight()" onmouseup="stopMove()" ontouchstart="moveRight()" ontouchend="stopMove()">➡️</div>
+                </div>
+            </section>
+        </div>
+
+        <!-- 遊戲 4: 彩繪 -->
+        <div id="section-game4" class="page-section">
+            <button onclick="goHome()" class="mb-6 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-3 px-8 rounded-full flex items-center gap-2 text-xl shadow-md active:scale-95 transition">
+                🏠 回主選單
+            </button>
+            <section class="mb-16 bg-orange-500 rounded-[2rem] p-6 md:p-10 text-white shadow-2xl border-4 border-yellow-300">
+                <div class="text-center mb-6">
+                    <h3 class="text-3xl font-bold mb-2 leading-relaxed">4. 彩繪聖誕老人</h3>
+                    <p class="text-xl">幫聖誕老人塗上顏色吧！</p>
+                </div>
+                <div class="flex flex-col items-center">
+                    <!-- 畫布 -->
+                    <div class="p-2 bg-white rounded-2xl shadow-inner mb-6">
+                        <canvas id="paintCanvas" width="400" height="450" class="bg-white rounded-xl cursor-crosshair touch-none"></canvas>
+                    </div>
+                    
+                    <!-- 顏色選擇器 -->
+                    <div class="flex gap-4 mb-6 bg-white/20 p-4 rounded-2xl overflow-x-auto max-w-full">
+                        <div class="color-btn active" style="background-color: #EF4444;" onclick="setColor(this, '#EF4444')"></div>
+                        <div class="color-btn" style="background-color: #10B981;" onclick="setColor(this, '#10B981')"></div>
+                        <div class="color-btn" style="background-color: #FCD34D;" onclick="setColor(this, '#FCD34D')"></div>
+                        <div class="color-btn" style="background-color: #3B82F6;" onclick="setColor(this, '#3B82F6')"></div>
+                        <div class="color-btn" style="background-color: #8B5CF6;" onclick="setColor(this, '#8B5CF6')"></div>
+                        <div class="color-btn" style="background-color: #000000;" onclick="setColor(this, '#000000')"></div>
+                        <div class="color-btn" style="background-color: #FFFFFF; border: 2px solid #ccc;" onclick="setColor(this, '#FFFFFF')"></div>
+                        <div class="color-btn" style="background-color: #FCA5A5;" onclick="setColor(this, '#FCA5A5')"></div>
+                    </div>
+                    
+                    <!-- 工具列 -->
+                    <div class="flex gap-4 flex-wrap justify-center">
+                        <button onclick="setBrushSize(5)" class="bg-white text-orange-600 px-6 py-3 rounded-xl font-bold text-lg hover:bg-gray-100 shadow active:scale-95 transition">細筆</button>
+                        <button onclick="setBrushSize(15)" class="bg-white text-orange-600 px-6 py-3 rounded-xl font-bold text-lg hover:bg-gray-100 shadow active:scale-95 transition">粗筆</button>
+                        <button onclick="clearPaint()" class="bg-red-600 text-white px-6 py-3 rounded-xl font-bold text-lg hover:bg-red-700 shadow active:scale-95 transition">全部重畫</button>
+                        <button onclick="exportPaintPDF()" class="bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-3 rounded-xl font-bold text-lg shadow flex items-center gap-2 active:scale-95 transition">
+                            📥 存成 PDF
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- 知識卡片 -->
+        <div id="section-flashcards" class="page-section">
+            <button onclick="goHome()" class="mb-6 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-3 px-8 rounded-full flex items-center gap-2 text-xl shadow-md active:scale-95 transition">
+                🏠 回主選單
+            </button>
+            <section class="mb-16">
+                <div class="flex items-center gap-3 mb-6">
+                    <span class="text-3xl">🔍</span>
+                    <h3 class="text-3xl font-bold text-red-700 leading-relaxed">知識翻翻卡</h3>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 h-80">
+                    <div class="flip-card h-full" onclick="this.classList.toggle('flipped')">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front"><div class="text-7xl mb-4">🎄</div><h4 class="text-2xl font-bold text-gray-700">這是什麼？</h4></div>
+                            <div class="flip-card-back p-4">
+                                <h4 class="text-2xl font-bold text-yellow-300 mb-1 flex flex-wrap justify-center">
+                                    <span class="z-block"><span class="z-char">聖</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄕ</span><span class="z-bo-symbol">ㄥ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                                    <span class="z-block"><span class="z-char">誕</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄉ</span><span class="z-bo-symbol">ㄢ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                                    <span class="z-block"><span class="z-char">樹</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄕ</span><span class="z-bo-symbol">ㄨ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                                </h4>
+                                <div class="text-lg font-bold text-white font-sans mb-2">Christmas Tree</div>
+                                <p>常青樹代表生命力！</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flip-card h-full" onclick="this.classList.toggle('flipped')">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front"><div class="text-7xl mb-4">🍪</div><h4 class="text-2xl font-bold text-gray-700">這是什麼？</h4></div>
+                            <div class="flip-card-back p-4">
+                                <h4 class="text-2xl font-bold text-yellow-300 mb-1 flex flex-wrap justify-center">
+                                    <span class="z-block"><span class="z-char">薑</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄐ</span><span class="z-bo-symbol">ㄧ</span><span class="z-bo-symbol">ㄤ</span></span></span>
+                                    <span class="z-block"><span class="z-char">餅</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄅ</span><span class="z-bo-symbol">ㄧ</span><span class="z-bo-symbol">ㄥ</span><span class="z-tone z-tone-right">ˇ</span></span></span>
+                                    <span class="z-block"><span class="z-char">人</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄖ</span><span class="z-bo-symbol">ㄣ</span><span class="z-tone z-tone-right">ˊ</span></span></span>
+                                </h4>
+                                <div class="text-lg font-bold text-white font-sans mb-2">Gingerbread Man</div>
+                                <p>好吃的餅乾！</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flip-card h-full" onclick="this.classList.toggle('flipped')">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front"><div class="text-7xl mb-4">🧦</div><h4 class="text-2xl font-bold text-gray-700">這是什麼？</h4></div>
+                            <div class="flip-card-back p-4">
+                                <h4 class="text-2xl font-bold text-yellow-300 mb-1 flex flex-wrap justify-center">
+                                    <span class="z-block"><span class="z-char">聖</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄕ</span><span class="z-bo-symbol">ㄥ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                                    <span class="z-block"><span class="z-char">誕</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄉ</span><span class="z-bo-symbol">ㄢ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                                    <span class="z-block"><span class="z-char">襪</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄨ</span><span class="z-bo-symbol">ㄚ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                                </h4>
+                                <div class="text-lg font-bold text-white font-sans mb-2">Christmas Stocking</div>
+                                <p>期待收到禮物！</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flip-card h-full" onclick="this.classList.toggle('flipped')">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front"><div class="text-7xl mb-4">🦌</div><h4 class="text-2xl font-bold text-gray-700">這是什麼？</h4></div>
+                            <div class="flip-card-back p-4">
+                                <h4 class="text-2xl font-bold text-yellow-300 mb-1 flex flex-wrap justify-center">
+                                    <span class="z-block"><span class="z-char">馴</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄒ</span><span class="z-bo-symbol">ㄩ</span><span class="z-bo-symbol">ㄣ</span><span class="z-tone z-tone-right">ˊ</span></span></span>
+                                    <span class="z-block"><span class="z-char">鹿</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄌ</span><span class="z-bo-symbol">ㄨ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                                </h4>
+                                <div class="text-lg font-bold text-white font-sans mb-2">Reindeer</div>
+                                <p>幫聖誕老人拉車！</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- 魔法故事 -->
+        <div id="section-story" class="page-section">
+            <button onclick="goHome()" class="mb-6 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-3 px-8 rounded-full flex items-center gap-2 text-xl shadow-md active:scale-95 transition">
+                🏠 回主選單
+            </button>
+            <section class="mb-16 bg-blue-600 rounded-[2rem] p-6 md:p-8 shadow-2xl border-4 border-white text-white">
+                <div class="flex items-center gap-3 mb-6">
+                    <span class="text-4xl">✨</span>
+                    <h3 class="text-3xl font-bold leading-relaxed">魔法故事</h3>
+                </div>
+                <div class="bg-white/10 p-8 rounded-3xl backdrop-blur-sm">
+                    <p class="mb-8 text-2xl text-center">選一個主角，變出一個小故事！</p>
+                    <div class="grid grid-cols-3 gap-6 mb-8">
+                        <button onclick="generateStory('馴鹿')" class="bg-white hover:bg-blue-50 text-gray-800 p-6 rounded-2xl shadow-lg transform hover:-translate-y-1 active:scale-95 transition flex flex-col items-center gap-2 group">
+                            <span class="text-6xl">🦌</span><span class="font-bold text-xl">馴鹿</span>
+                        </button>
+                        <button onclick="generateStory('雪人')" class="bg-white hover:bg-blue-50 text-gray-800 p-6 rounded-2xl shadow-lg transform hover:-translate-y-1 active:scale-95 transition flex flex-col items-center gap-2 group">
+                            <span class="text-6xl">⛄</span><span class="font-bold text-xl">雪人</span>
+                        </button>
+                        <button onclick="generateStory('薑餅人')" class="bg-white hover:bg-blue-50 text-gray-800 p-6 rounded-2xl shadow-lg transform hover:-translate-y-1 active:scale-95 transition flex flex-col items-center gap-2 group">
+                            <span class="text-6xl">🍪</span><span class="font-bold text-xl">薑餅人</span>
+                        </button>
+                    </div>
+                    <div id="storyResponse" class="bg-white text-gray-800 p-8 rounded-3xl shadow-md hidden relative">
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="font-bold text-blue-600 text-xl">📖 故事：</span>
+                            <button id="playStoryBtn" onclick="playStoryAudio()" class="hidden flex items-center gap-2 bg-yellow-100 hover:bg-yellow-200 text-yellow-700 px-4 py-2 rounded-full text-lg font-bold transition">
+                                <span>🔊 聽故事</span>
+                            </button>
+                            <div id="storyAudioLoading" class="hidden text-lg text-gray-500 flex items-center gap-2">
+                                <div class="speaking-wave">
+                                    <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                                </div>
+                                讀取中...
+                            </div>
+                        </div>
+                        <div id="storyText" class="text-2xl leading-relaxed text-gray-800"></div>
+                    </div>
+                    <div id="storyLoading" class="text-center text-2xl font-bold hidden thinking-dots mt-4">正在施展魔法</div>
+                </div>
+            </section>
+        </div>
+
+    </main>
+
+    <footer class="bg-red-700 text-white text-center py-6 mt-10 text-xl">
+        <p class="font-bold">Merry Christmas!</p>
+    </footer>
+
+    <script>
+        // --- 注意：在公開的 GitHub 程式碼中放置 API Key 有資安風險 ---
+        // 建議您在 Google Cloud Console 中設定 API Key 的 "HTTP Referrer" 限制，
+        // 只允許您的 GitHub Pages 網址 (例如：https://yourname.github.io/*) 呼叫此 Key。
+        const apiKey = "AIzaSyB3whkh9hoXamjV9Plx19gV47p0UI0eOWU"; 
+        
+        let lastSantaResponse = ""; 
+        let lastStoryResponse = ""; 
+        let studentName = "";
+        let playedGames = new Set(); 
+
+        // --- 登入與導航系統 ---
+        function login() {
+            const input = document.getElementById('studentNameInput');
+            if(input.value.trim() !== "") {
+                studentName = input.value.trim();
+                document.getElementById('navStudentName').innerText = `👋 嗨，${studentName}！`;
+                document.getElementById('navStudentName').classList.remove('hidden');
+                switchPage('page-welcome', 'page-menu');
+            } else {
+                alert("請輸入名字喔！");
+            }
+        }
+
+        function switchPage(hideId, showId) {
+            document.querySelectorAll('.page-section').forEach(el => el.classList.remove('active'));
+            document.getElementById(showId).classList.add('active');
+            stopAllGameTimers();
+            window.scrollTo(0,0);
+        }
+
+        function goHome() {
+            if(!studentName) return;
+            switchPage('any', 'page-menu');
+        }
+
+        function goToSection(sectionId) {
+            switchPage('page-menu', sectionId);
+            playedGames.add(sectionId);
+            const menuCard = document.getElementById('menu-' + sectionId);
+            if(menuCard) {
+                menuCard.classList.add('played');
+            }
+            if(sectionId === 'section-game4') {
+                setTimeout(initPaint, 100); 
+            }
+            if(sectionId === 'section-game2') {
+                initMemoryGame();
+            }
+        }
+        
+        function stopAllGameTimers() {
+            if (typeof memoryTimerInterval !== 'undefined') clearInterval(memoryTimerInterval);
+            if (typeof catchTimerInterval !== 'undefined') clearInterval(catchTimerInterval);
+            if (typeof spawnTimeout !== 'undefined') clearTimeout(spawnTimeout);
+            isGameRunning = false;
+        }
+
+        function playVideo(container, videoId, startSeconds = 0) {
+            container.classList.remove('video-cover');
+            let src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&playsinline=1&modestbranding=1`;
+            if (startSeconds > 0) src += `&start=${startSeconds}`;
+            container.innerHTML = `<iframe class="w-full h-full" src="${src}" title="Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+            container.onclick = null; 
+        }
+
+        // --- Helper: Gemini API ---
+        async function callGemini(prompt) {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                });
+                if (!response.ok) throw new Error(`API Error: ${response.status}`);
+                const data = await response.json();
+                if (data.candidates && data.candidates.length > 0) {
+                    return data.candidates[0].content.parts[0].text;
+                } else {
+                    return "聖誕老公公正在想...";
+                }
+            } catch (e) { 
+                console.error(e); 
+                return "聖誕老公公正在忙線中...(請確認網路或 API Key)"; 
+            }
+        }
+
+        // --- Helper: Gemini TTS ---
+        async function playAudioGeneric(text, btnId, loadingId) {
+            if (!text) return;
+            const btn = document.getElementById(btnId);
+            const loading = document.getElementById(loadingId);
+            btn.classList.add('hidden');
+            loading.classList.remove('hidden');
+
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
+            const payload = {
+                contents: [{ parts: [{ text: text }] }],
+                generationConfig: {
+                    responseModalities: ["AUDIO"],
+                    speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: "Fenrir" } } } 
+                }
+            };
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await response.json();
+                const base64Audio = data.candidates[0].content.parts[0].inlineData.data;
+                const pcmData = atob(base64Audio);
+                const buffer = new ArrayBuffer(pcmData.length);
+                const view = new Uint8Array(buffer);
+                for (let i = 0; i < pcmData.length; i++) view[i] = pcmData.charCodeAt(i);
+                
+                const wavBlob = pcmToWav(view, 24000); 
+                const audioUrl = URL.createObjectURL(wavBlob);
+                const audio = new Audio(audioUrl);
+                audio.play();
+                
+                audio.onended = () => {
+                   loading.classList.add('hidden');
+                   btn.classList.remove('hidden');
+                };
+            } catch (e) {
+                console.error("TTS Error:", e);
+                loading.classList.add('hidden');
+                btn.classList.remove('hidden');
+                alert("語音功能暫時無法使用");
+            }
+        }
+
+        async function playSantaAudio() {
+            playAudioGeneric(lastSantaResponse, 'playAudioBtn', 'audioLoading');
+        }
+
+        async function playStoryAudio() {
+            playAudioGeneric(lastStoryResponse, 'playStoryBtn', 'storyAudioLoading');
+        }
+
+        function pcmToWav(pcmData, sampleRate) {
+            const header = new ArrayBuffer(44);
+            const view = new DataView(header);
+            writeString(view, 0, 'RIFF');
+            view.setUint32(4, 36 + pcmData.length, true);
+            writeString(view, 8, 'WAVE');
+            writeString(view, 12, 'fmt ');
+            view.setUint32(16, 16, true);
+            view.setUint16(20, 1, true); 
+            view.setUint16(22, 1, true); 
+            view.setUint32(24, sampleRate, true);
+            view.setUint32(28, sampleRate * 2, true);
+            view.setUint16(32, 2, true);
+            view.setUint16(34, 16, true); 
+            writeString(view, 36, 'data');
+            view.setUint32(40, pcmData.length, true);
+            return new Blob([header, pcmData], { type: 'audio/wav' });
+        }
+        function writeString(view, offset, string) {
+            for (let i = 0; i < string.length; i++) view.setUint8(offset + i, string.charCodeAt(i));
+        }
+
+        function startListening() {
+            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                alert("您的瀏覽器不支援語音輸入，請使用 Chrome！");
+                return;
+            }
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            const recognition = new SpeechRecognition();
+            recognition.lang = 'zh-TW';
+            recognition.start();
+            
+            const input = document.getElementById('santaInput');
+            input.placeholder = "正在聽你說話...";
+            
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                input.value = transcript;
+                input.placeholder = "想跟聖誕老公公說什麼？";
+                askSanta(); 
+            };
+            recognition.onerror = () => {
+                input.placeholder = "聽不清楚，請再試一次";
+            };
+        }
+
+        async function askSanta() {
+            const input = document.getElementById('santaInput');
+            const responseBox = document.getElementById('santaResponse');
+            const loadingBox = document.getElementById('santaLoading');
+            const textBox = document.getElementById('santaText');
+            const audioBtn = document.getElementById('playAudioBtn');
+            const audioLoading = document.getElementById('audioLoading');
+            
+            const userText = input.value.trim();
+            if (!userText) return;
+
+            loadingBox.classList.remove('hidden');
+            responseBox.classList.add('hidden');
+            audioBtn.classList.add('hidden'); 
+
+            const systemPrompt = `你現在是聖誕老公公。請用繁體中文回答一位名叫${studentName}的國小一年級小朋友的問題："${userText}"。語氣溫柔慈祥、簡短(50字內)、多用emoji。`;
+            const reply = await callGemini(systemPrompt);
+
+            lastSantaResponse = reply; 
+            
+            if (window.marked) {
+                textBox.innerHTML = marked.parse(reply);
+            } else {
+                textBox.innerText = reply;
+            }
+            
+            loadingBox.classList.add('hidden');
+            responseBox.classList.remove('hidden');
+            audioBtn.classList.remove('hidden'); 
+            audioLoading.classList.add('hidden');
+            
+            input.value = '';
+        }
+        
+        async function generateStory(character) {
+            const responseBox = document.getElementById('storyResponse');
+            const loadingBox = document.getElementById('storyLoading');
+            const textBox = document.getElementById('storyText');
+            const audioBtn = document.getElementById('playStoryBtn');
+
+            loadingBox.classList.remove('hidden');
+            responseBox.classList.add('hidden');
+            audioBtn.classList.add('hidden');
+
+            const systemPrompt = `請為國小一年級的名叫${studentName}的小朋友寫一個關於「${character}」的超短故事。2-3句話，繁體中文，溫馨可愛，含emoji。`;
+            const story = await callGemini(systemPrompt);
+
+            lastStoryResponse = story; 
+
+            if (window.marked) {
+                textBox.innerHTML = marked.parse(story);
+            } else {
+                textBox.innerText = story;
+            }
+            
+            loadingBox.classList.add('hidden');
+            responseBox.classList.remove('hidden');
+            audioBtn.classList.remove('hidden'); 
+        }
+
+        // --- Game 1: Decoration ---
+        const sources = document.querySelectorAll('.draggable-source');
+        const gameArea = document.getElementById('decorationGameArea');
+        const treeArea = document.getElementById('treeTargetArea');
+        let draggedElement = null;
+
+        sources.forEach(source => {
+            source.addEventListener('mousedown', startDrag);
+            source.addEventListener('touchstart', startDrag, {passive: false});
+        });
+
+        function startDrag(e) {
+            e.preventDefault();
+            const source = e.currentTarget;
+            const type = source.dataset.type;
+            
+            draggedElement = document.createElement('div');
+            draggedElement.innerText = type;
+            draggedElement.className = 'absolute text-6xl pointer-events-none z-50 drop-shadow-md'; 
+            
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            
+            draggedElement.style.left = clientX + 'px';
+            draggedElement.style.top = clientY + 'px';
+            draggedElement.style.transform = 'translate(-50%, -50%) scale(1.2)'; 
+            
+            document.body.appendChild(draggedElement);
+            
+            document.addEventListener('mousemove', moveDrag);
+            document.addEventListener('mouseup', endDrag);
+            document.addEventListener('touchmove', moveDrag, {passive: false});
+            document.addEventListener('touchend', endDrag);
+        }
+
+        function moveDrag(e) {
+            if (!draggedElement) return;
+            e.preventDefault();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            
+            draggedElement.style.left = clientX + 'px';
+            draggedElement.style.top = clientY + 'px';
+        }
+
+        function endDrag(e) {
+            if (!draggedElement) return;
+            
+            const clientX = e.changedTouches ? e.changedTouches[0].clientX : e.clientX;
+            const clientY = e.changedTouches ? e.changedTouches[0].clientY : e.clientY;
+            
+            const treeRect = treeArea.getBoundingClientRect();
+            
+            if (clientX >= treeRect.left && clientX <= treeRect.right &&
+                clientY >= treeRect.top && clientY <= treeRect.bottom) {
+                
+                const decoration = document.createElement('div');
+                decoration.innerText = draggedElement.innerText;
+                decoration.className = 'tree-decoration text-5xl drop-shadow-sm'; 
+                
+                const relX = clientX - treeRect.left;
+                const relY = clientY - treeRect.top;
+                
+                decoration.style.left = relX + 'px';
+                decoration.style.top = relY + 'px';
+                
+                treeArea.appendChild(decoration);
+            }
+            
+            draggedElement.remove();
+            draggedElement = null;
+            document.removeEventListener('mousemove', moveDrag);
+            document.removeEventListener('mouseup', endDrag);
+            document.removeEventListener('touchmove', moveDrag);
+            document.removeEventListener('touchend', endDrag);
+        }
+
+        function clearDecorations() {
+            const decorations = treeArea.querySelectorAll('.tree-decoration');
+            decorations.forEach(d => d.remove());
+        }
+
+        async function exportTreePDF() {
+            const { jsPDF } = window.jspdf;
+            const element = document.getElementById('decorationGameArea');
+            const palette = element.querySelector('.rounded-b-2xl') || element.querySelector('.rounded-b-3xl'); 
+            if(palette) palette.style.display = 'none'; 
+            
+            try {
+                const canvas = await html2canvas(element, { scale: 2, backgroundColor: '#166534' });
+                if(palette) palette.style.display = 'flex';
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+                pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+                pdf.save(`聖誕樹-${studentName || '小朋友'}.pdf`);
+            } catch (err) {
+                console.error(err);
+                alert("無法產生 PDF，請稍後再試！");
+                if(palette) palette.style.display = 'flex';
+            }
+        }
+
+        // --- Game 2: Memory Match ---
+        const memoryIcons = ['🎅', '🎄', '🎁', '🦌', '⛄', '🍪'];
+        let memoryCards = [];
+        let flippedCards = [];
+        let matchedPairs = 0;
+        let memoryTimerInterval;
+        let memoryTimeLeft = 60;
+
+        function initMemoryGame() {
+            const grid = document.getElementById('memoryGrid');
+            grid.innerHTML = '';
+            matchedPairs = 0;
+            flippedCards = [];
+            
+            if(memoryTimerInterval) clearInterval(memoryTimerInterval);
+            memoryTimeLeft = 60;
+            document.getElementById('memoryTimer').innerText = memoryTimeLeft;
+            document.getElementById('memoryOverlay').classList.remove('hidden');
+
+            let deck = [...memoryIcons, ...memoryIcons];
+            deck.sort(() => 0.5 - Math.random());
+            
+            deck.forEach((icon, index) => {
+                const card = document.createElement('div');
+                card.className = 'memory-card';
+                card.dataset.icon = icon;
+                card.dataset.index = index;
+                card.onclick = () => flipMemoryCard(card);
+                card.innerHTML = `<div class="front">?</div>`; 
+                grid.appendChild(card);
+            });
+        }
+
+        function startMemoryGame() {
+            document.getElementById('memoryOverlay').classList.add('hidden');
+            if(memoryTimerInterval) clearInterval(memoryTimerInterval);
+            memoryTimeLeft = 60;
+            document.getElementById('memoryTimer').innerText = memoryTimeLeft;
+            
+            memoryTimerInterval = setInterval(() => {
+                memoryTimeLeft--;
+                document.getElementById('memoryTimer').innerText = memoryTimeLeft;
+                if(memoryTimeLeft <= 0) {
+                    clearInterval(memoryTimerInterval);
+                    alert("時間到！⏰ 加油，再試一次！");
+                    initMemoryGame();
+                }
+            }, 1000);
+        }
+        
+        function flipMemoryCard(card) {
+            if (!document.getElementById('memoryOverlay').classList.contains('hidden')) return;
+            if (memoryTimeLeft <= 0) return; 
+            if (card.classList.contains('flipped') || card.classList.contains('matched') || flippedCards.length >= 2) return;
+            
+            card.classList.add('flipped');
+            card.textContent = card.dataset.icon; 
+            flippedCards.push(card);
+            
+            if (flippedCards.length === 2) {
+                setTimeout(checkMatch, 800);
+            }
+        }
+        
+        function checkMatch() {
+            const [card1, card2] = flippedCards;
+            if (card1.dataset.icon === card2.dataset.icon) {
+                card1.classList.add('matched');
+                card2.classList.add('matched');
+                matchedPairs++;
+                if (matchedPairs === memoryIcons.length) {
+                    clearInterval(memoryTimerInterval);
+                    setTimeout(() => alert(`恭喜你！用了 ${60 - memoryTimeLeft} 秒完成！🎉`), 300);
+                }
+            } else {
+                card1.classList.remove('flipped');
+                card1.innerHTML = '<div class="front">?</div>'; 
+                card2.classList.remove('flipped');
+                card2.innerHTML = '<div class="front">?</div>'; 
+            }
+            flippedCards = [];
+        }
+
+        // --- Game 3: Catch Gifts ---
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        let gameInterval;
+        let isGameRunning = false;
+        let playerX = 250; 
+        let score = 0;
+        let fallingItems = [];
+        let moveDirection = 0; 
+        let catchTimerInterval;
+        let catchTimeLeft = 60;
+        let spawnTimeout; 
+
+        function startGame() {
+            if (isGameRunning) return;
+            if(gameInterval) cancelAnimationFrame(gameInterval);
+            if(catchTimerInterval) clearInterval(catchTimerInterval);
+            if(spawnTimeout) clearTimeout(spawnTimeout); 
+
+            isGameRunning = true;
+            document.getElementById('gameOverlay').classList.add('hidden');
+            score = 0;
+            fallingItems = [];
+            document.getElementById('score').innerText = score;
+            catchTimeLeft = 60;
+            document.getElementById('catchTimer').innerText = catchTimeLeft;
+            
+            catchTimerInterval = setInterval(() => {
+                catchTimeLeft--;
+                document.getElementById('catchTimer').innerText = catchTimeLeft;
+                if(catchTimeLeft <= 0) {
+                    clearInterval(catchTimerInterval);
+                    isGameRunning = false;
+                    if(spawnTimeout) clearTimeout(spawnTimeout); 
+                    alert("時間到！⏰ 遊戲結束，你的得分是：" + score);
+                    document.getElementById('gameOverlay').classList.remove('hidden');
+                }
+            }, 1000);
+
+            gameInterval = requestAnimationFrame(gameLoop);
+            spawnItem();
+        }
+
+        function restartCatchGame() {
+            isGameRunning = false;
+            if(gameInterval) cancelAnimationFrame(gameInterval);
+            if(catchTimerInterval) clearInterval(catchTimerInterval);
+            if(spawnTimeout) clearTimeout(spawnTimeout); 
+            startGame();
+        }
+
+        function spawnItem() {
+            if (!isGameRunning) return;
+            fallingItems.push({
+                x: Math.random() * (canvas.width - 40), 
+                y: -30,
+                speed: 2 + Math.random() * 2,
+                type: Math.random() > 0.8 ? '💣' : '🎁' 
+            });
+            spawnTimeout = setTimeout(spawnItem, 1000);
+        }
+
+        function gameLoop() {
+            if (!isGameRunning) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            if (moveDirection !== 0) {
+                playerX += moveDirection * 8; 
+                if (playerX < 0) playerX = 0;
+                if (playerX > canvas.width - 50) playerX = canvas.width - 50;
+            }
+
+            ctx.font = "50px Arial";
+            ctx.fillText("🎅", playerX, canvas.height - 20);
+
+            for (let i = 0; i < fallingItems.length; i++) {
+                let item = fallingItems[i];
+                item.y += item.speed;
+                ctx.fillText(item.type, item.x, item.y);
+
+                if (item.y > canvas.height - 60 && item.y < canvas.height - 10 && item.x > playerX - 30 && item.x < playerX + 50) {
+                    if (item.type === '🎁') {
+                        score += 10;
+                    } else {
+                        score -= 5;
+                    }
+                    document.getElementById('score').innerText = score;
+                    fallingItems.splice(i, 1);
+                    i--;
+                } else if (item.y > canvas.height + 10) {
+                    fallingItems.splice(i, 1);
+                    i--;
+                }
+            }
+            gameInterval = requestAnimationFrame(gameLoop);
+        }
+
+        function moveLeft() { moveDirection = -1; }
+        function moveRight() { moveDirection = 1; }
+        function stopMove() { moveDirection = 0; }
+
+        // --- Game 4: Paint Santa ---
+        const pCanvas = document.getElementById('paintCanvas');
+        const pCtx = pCanvas.getContext('2d');
+        let isPainting = false;
+        let currentColor = '#EF4444';
+        let brushSize = 5;
+        let santaImgObj = new Image();
+
+        function initPaint() {
+            pCtx.lineCap = 'round';
+            pCtx.lineJoin = 'round';
+            
+            // 使用線上圖片作為範本，確保 GitHub Pages 能讀取
+            santaImgObj.src = "https://cdn.pixabay.com/photo/2016/12/18/18/00/santa-claus-1916536_1280.png"; 
+            
+            santaImgObj.onload = function() {
+                clearPaint();
+            };
+        }
+
+        function clearPaint() {
+            pCtx.fillStyle = '#FFFFFF';
+            pCtx.fillRect(0, 0, pCanvas.width, pCanvas.height);
+            
+            if (santaImgObj.complete) {
+                const hRatio = pCanvas.width / santaImgObj.width;
+                const vRatio = pCanvas.height / santaImgObj.height;
+                const ratio = Math.min(hRatio, vRatio);
+                const centerShift_x = (pCanvas.width - santaImgObj.width * ratio) / 2;
+                const centerShift_y = (pCanvas.height - santaImgObj.height * ratio) / 2;
+                
+                pCtx.drawImage(santaImgObj, 0, 0, santaImgObj.width, santaImgObj.height,
+                               centerShift_x, centerShift_y, santaImgObj.width * ratio, santaImgObj.height * ratio);
+            }
+        }
+
+        pCanvas.addEventListener('mousedown', startPaint);
+        pCanvas.addEventListener('mousemove', drawPaint);
+        pCanvas.addEventListener('mouseup', stopPaint);
+        pCanvas.addEventListener('mouseout', stopPaint);
+        
+        pCanvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            startPaint(e.touches[0]);
+        }, {passive: false});
+        pCanvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            drawPaint(e.touches[0]);
+        }, {passive: false});
+        pCanvas.addEventListener('touchend', stopPaint);
+
+        function startPaint(e) {
+            isPainting = true;
+            const rect = pCanvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            pCtx.beginPath();
+            pCtx.moveTo(x, y);
+            pCtx.strokeStyle = currentColor;
+            pCtx.lineWidth = brushSize;
+        }
+
+        function drawPaint(e) {
+            if (!isPainting) return;
+            const rect = pCanvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            pCtx.lineTo(x, y);
+            pCtx.stroke();
+        }
+
+        function stopPaint() {
+            isPainting = false;
+            pCtx.closePath();
+        }
+
+        function setColor(el, color) {
+            currentColor = color;
+            document.querySelectorAll('.color-btn').forEach(btn => btn.classList.remove('active'));
+            el.classList.add('active');
+        }
+
+        function setBrushSize(size) {
+            brushSize = size;
+        }
+
+        function exportPaintPDF() {
+            const { jsPDF } = window.jspdf;
+            const canvas = document.getElementById('paintCanvas');
+            try {
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const margin = 20; 
+                const imgWidth = pdfWidth - margin; 
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                const x = margin / 2;
+                const y = 20; 
+                pdf.addImage(imgData, 'PNG', x, y, imgWidth, imgHeight);
+                pdf.save(`彩繪聖誕老人-${studentName || '小朋友'}.pdf`);
+            } catch (err) {
+                console.error(err);
+                alert("無法產生 PDF，請稍後再試！");
+            }
+        }
+
+        function createSnowflake() {
+            const snowflake = document.createElement('div');
+            snowflake.innerHTML = '❄';
+            snowflake.classList.add('snowflake');
+            snowflake.style.left = Math.random() * window.innerWidth + 'px';
+            snowflake.style.animationDuration = Math.random() * 3 + 2 + 's';
+            snowflake.style.opacity = Math.random();
+            snowflake.style.fontSize = Math.random() * 10 + 10 + 'px';
+            document.body.appendChild(snowflake);
+            setTimeout(() => { snowflake.remove(); }, 5000);
+        }
+        setInterval(createSnowflake, 200);
+
+    </script>
+</body>
+</html>
