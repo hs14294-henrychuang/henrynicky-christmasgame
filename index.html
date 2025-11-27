@@ -1062,6 +1062,7 @@
                         <span class="z-block"><span class="z-char">法</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄈ</span><span class="z-bo-symbol">ㄚ</span><span class="z-tone z-tone-right">ˇ</span></span></span>
                         <span class="z-block"><span class="z-char">故</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄍ</span><span class="z-bo-symbol">ㄨ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
                         <span class="z-block"><span class="z-char">事</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄕ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                        <span class="z-block"><span class="z-char">機</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄐ</span><span class="z-bo-symbol">ㄧ</span></span></span>
                     </h3>
                 </div>
                 <div class="bg-white/10 p-8 rounded-3xl backdrop-blur-sm">
@@ -1117,6 +1118,60 @@
     </footer>
 
     <script>
+        // --- Helper: Gemini API (功能增強版) ---
+        async function callGemini(prompt) {
+            // 確認 Key 是否填寫
+            if (!apiKey || apiKey.length < 10) {
+                alert("請檢查程式碼中的 API Key 是否正確填寫！");
+                return "設定有誤，請檢查 API Key。";
+            }
+
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+            
+            // 增加安全設定，避免因誤判而阻擋內容
+            const payload = {
+                contents: [{ parts: [{ text: prompt }] }],
+                safetySettings: [
+                    { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" },
+                    { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_NONE" },
+                    { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_NONE" },
+                    { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_NONE" }
+                ]
+            };
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                if (!response.ok) {
+                    // 嘗試讀取錯誤詳情
+                    const errorData = await response.json().catch(() => ({}));
+                    console.error("API Error Details:", errorData);
+                    
+                    if (response.status === 403) {
+                        return "API Key 權限不足 (403)。請檢查 Google Cloud Console 的 Referrer 限制，是否已加入您的 GitHub 網址。";
+                    } else if (response.status === 400) {
+                        return "請求無效 (400)。請檢查 API Key 是否正確。";
+                    }
+                    return `連線錯誤 (${response.status})。聖誕老公公現在有點忙。`;
+                }
+                
+                const data = await response.json();
+                if (data.candidates && data.candidates.length > 0 && data.candidates[0].content) {
+                    return data.candidates[0].content.parts[0].text;
+                } else {
+                    console.warn("No content in response:", data);
+                    return "聖誕老公公正在想... (沒有回應)";
+                }
+            } catch (e) { 
+                console.error("Network Error:", e); 
+                return "網路連線失敗，請檢查您的網路狀態。"; 
+            }
+        }
+
         // --- 設定 API Key ---
         const apiKey = "AIzaSyB3whkh9hoXamjV9Plx19gV47p0UI0eOWU"; 
         
@@ -1178,34 +1233,6 @@
             if (startSeconds > 0) src += `&start=${startSeconds}`;
             container.innerHTML = `<iframe class="w-full h-full" src="${src}" title="Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
             container.onclick = null; 
-        }
-
-        // --- Helper: Gemini API (改為穩定版模型) ---
-        async function callGemini(prompt) {
-            // 改用穩定版 gemini-1.5-flash，解決 Github 上權限不足的問題
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-            try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-                });
-                
-                if (!response.ok) {
-                    console.error(`API Error: ${response.status}`);
-                    return "聖誕老公公現在有點忙，請稍後再試試看喔！";
-                }
-                
-                const data = await response.json();
-                if (data.candidates && data.candidates.length > 0) {
-                    return data.candidates[0].content.parts[0].text;
-                } else {
-                    return "聖誕老公公正在想...";
-                }
-            } catch (e) { 
-                console.error(e); 
-                return "網路連線有點問題，請檢查網路喔！"; 
-            }
         }
 
         // 新增：移除 Emoji 的輔助函式 (使用 Unicode 屬性過濾)
