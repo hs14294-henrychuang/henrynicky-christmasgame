@@ -354,7 +354,7 @@
 
     <!-- 1. 浮水印 -->
     <div class="watermark">
-        薇糖紹冰的教學日誌- 黃薇老師設計、紹群老師調整
+        薇糖紹冰的教學日誌- 黃薇老師設計、紹群老師調整優化
     </div>
 
     <!-- 背景裝飾 -->
@@ -384,6 +384,7 @@
                         <span class="z-block"><span class="z-char">年</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄋ</span><span class="z-bo-symbol">ㄧ</span><span class="z-bo-symbol">ㄢ</span><span class="z-tone z-tone-right">ˊ</span></span></span>
                         <span class="z-block"><span class="z-char">級</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄐ</span><span class="z-bo-symbol">ㄧ</span><span class="z-tone z-tone-right">ˊ</span></span></span>
                     </span>
+                    
                     <span class="md:hidden">一年級</span>
                 </div>
             </div>
@@ -394,31 +395,33 @@
     <main class="container mx-auto p-4 md:p-8 relative z-10 max-w-5xl min-h-[80vh]">
 
         <!-- ==================== 頁面 1: 歡迎登入頁 ==================== -->
-        <div id="page-welcome" class="page-section active flex flex-col items-center justify-center pt-10">
-            <div class="text-7xl mb-8 bounce-animation">🎅</div>
-            <h2 class="text-5xl font-bold mb-8 text-red-700 title-text">
-                <span class="z-block"><span class="z-char">歡</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄏ</span><span class="z-bo-symbol">ㄨ</span><span class="z-bo-symbol">ㄢ</span></span></span>
-                <span class="z-block"><span class="z-char">迎</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄧ</span><span class="z-bo-symbol">ㄥ</span><span class="z-tone z-tone-right">ˊ</span></span></span>
-                <span class="z-block"><span class="z-char">光</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄍ</span><span class="z-bo-symbol">ㄨ</span><span class="z-bo-symbol">ㄤ</span></span></span>
-                <span class="z-block"><span class="z-char">臨</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄌ</span><span class="z-bo-symbol">ㄧ</span><span class="z-bo-symbol">ㄣ</span><span class="z-tone z-tone-right">ˊ</span></span></span>
-            </h2>
-            
-            <div class="bg-white p-10 rounded-[2rem] shadow-2xl border-4 border-green-600 max-w-md w-full text-center">
-                <label class="block text-2xl font-bold text-green-800 mb-6">
-                    <span class="z-block"><span class="z-char">請</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄑ</span><span class="z-bo-symbol">ㄧ</span><span class="z-bo-symbol">ㄥ</span><span class="z-tone z-tone-right">ˇ</span></span></span>
-                    <span class="z-block"><span class="z-char">輸</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄕ</span><span class="z-bo-symbol">ㄨ</span></span></span>
-                    <span class="z-block"><span class="z-char">入</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄖ</span><span class="z-bo-symbol">ㄨ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
-                    <span class="z-block"><span class="z-char">名</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄇ</span><span class="z-bo-symbol">ㄧ</span><span class="z-bo-symbol">ㄥ</span><span class="z-tone z-tone-right">ˊ</span></span></span>
-                    <span class="z-block"><span class="z-char">字</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄗ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
-                </label>
-                <input type="text" id="studentNameInput" class="w-full text-3xl p-5 text-center border-4 border-gray-200 rounded-2xl mb-8 focus:border-red-500 focus:outline-none" placeholder="你的名字">
-                <button onclick="login()" class="w-full bg-red-600 hover:bg-red-700 text-white text-2xl font-bold py-5 rounded-2xl shadow-lg transform active:scale-95 transition">
-                    <span class="z-block"><span class="z-char">開</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄎ</span><span class="z-bo-symbol">ㄞ</span></span></span>
-                    <span class="z-block"><span class="z-char">始</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄕ</span><span class="z-tone z-tone-right">ˇ</span></span></span>
-                    <span class="z-block"><span class="z-char">上</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄕ</span><span class="z-bo-symbol">ㄤ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
-                    <span class="z-block"><span class="z-char">課</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄎ</span><span class="z-bo-symbol">ㄜ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
-                    🚀
-                </button>
+        <div id="page-welcome" class="page-section active">
+            <div class="flex flex-col items-center justify-center min-h-[70vh] w-full">
+                <div class="text-7xl mb-8 bounce-animation">🎅</div>
+                <h2 class="text-5xl font-bold mb-8 text-red-700 title-text">
+                    <span class="z-block"><span class="z-char">歡</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄏ</span><span class="z-bo-symbol">ㄨ</span><span class="z-bo-symbol">ㄢ</span></span></span>
+                    <span class="z-block"><span class="z-char">迎</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄧ</span><span class="z-bo-symbol">ㄥ</span><span class="z-tone z-tone-right">ˊ</span></span></span>
+                    <span class="z-block"><span class="z-char">光</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄍ</span><span class="z-bo-symbol">ㄨ</span><span class="z-bo-symbol">ㄤ</span></span></span>
+                    <span class="z-block"><span class="z-char">臨</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄌ</span><span class="z-bo-symbol">ㄧ</span><span class="z-bo-symbol">ㄣ</span><span class="z-tone z-tone-right">ˊ</span></span></span>
+                </h2>
+                
+                <div class="bg-white p-10 rounded-[2rem] shadow-2xl border-4 border-green-600 max-w-md w-full text-center">
+                    <label class="block text-2xl font-bold text-green-800 mb-6">
+                        <span class="z-block"><span class="z-char">請</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄑ</span><span class="z-bo-symbol">ㄧ</span><span class="z-bo-symbol">ㄥ</span><span class="z-tone z-tone-right">ˇ</span></span></span>
+                        <span class="z-block"><span class="z-char">輸</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄕ</span><span class="z-bo-symbol">ㄨ</span></span></span>
+                        <span class="z-block"><span class="z-char">入</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄖ</span><span class="z-bo-symbol">ㄨ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                        <span class="z-block"><span class="z-char">名</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄇ</span><span class="z-bo-symbol">ㄧ</span><span class="z-bo-symbol">ㄥ</span><span class="z-tone z-tone-right">ˊ</span></span></span>
+                        <span class="z-block"><span class="z-char">字</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄗ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                    </label>
+                    <input type="text" id="studentNameInput" class="w-full text-3xl p-5 text-center border-4 border-gray-200 rounded-2xl mb-8 focus:border-red-500 focus:outline-none" placeholder="你的名字">
+                    <button onclick="login()" class="w-full bg-red-600 hover:bg-red-700 text-white text-2xl font-bold py-5 rounded-2xl shadow-lg transform active:scale-95 transition">
+                        <span class="z-block"><span class="z-char">開</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄎ</span><span class="z-bo-symbol">ㄞ</span></span></span>
+                        <span class="z-block"><span class="z-char">始</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄕ</span><span class="z-tone z-tone-right">ˇ</span></span></span>
+                        <span class="z-block"><span class="z-char">上</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄕ</span><span class="z-bo-symbol">ㄤ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                        <span class="z-block"><span class="z-char">課</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄎ</span><span class="z-bo-symbol">ㄜ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                        🚀
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -579,7 +582,13 @@
                             <img src="https://i.ytimg.com/vi/EEJrFonrE4E/maxresdefault.jpg" alt="聖誕節的故事影片封面" class="w-full h-full object-cover opacity-90 hover:opacity-100 transition">
                         </div>
                         <div class="text-center">
-                            <h4 class="text-2xl font-bold text-green-800 mb-1 leading-relaxed">📖 聖誕故事</h4>
+                            <h4 class="text-2xl font-bold text-green-800 mb-1 leading-relaxed">
+                                📖 
+                                <span class="z-block"><span class="z-char">聖</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄕ</span><span class="z-bo-symbol">ㄥ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                                <span class="z-block"><span class="z-char">誕</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄉ</span><span class="z-bo-symbol">ㄢ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                                <span class="z-block"><span class="z-char">故</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄍ</span><span class="z-bo-symbol">ㄨ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                                <span class="z-block"><span class="z-char">事</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄕ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                            </h4>
                         </div>
                     </div>
                     <div class="bg-white p-4 rounded-3xl shadow-xl border-4 border-red-500 transform hover:-translate-y-1 active:scale-95 transition duration-200">
@@ -587,7 +596,13 @@
                             <img src="https://i.ytimg.com/vi/_c2lbV7n03I/maxresdefault.jpg" alt="禮物的秘密影片封面" class="w-full h-full object-cover opacity-90 hover:opacity-100 transition">
                         </div>
                         <div class="text-center">
-                            <h4 class="text-2xl font-bold text-red-600 mb-1 leading-relaxed">🎁 禮物秘密</h4>
+                            <h4 class="text-2xl font-bold text-red-600 mb-1 leading-relaxed">
+                                🎁 
+                                <span class="z-block"><span class="z-char">禮</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄌ</span><span class="z-bo-symbol">ㄧ</span><span class="z-tone z-tone-right">ˇ</span></span></span>
+                                <span class="z-block"><span class="z-char">物</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄨ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                                <span class="z-block"><span class="z-char">秘</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄇ</span><span class="z-bo-symbol">ㄧ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                                <span class="z-block"><span class="z-char">密</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄇ</span><span class="z-bo-symbol">ㄧ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                            </h4>
                         </div>
                     </div>
                     <div class="bg-white p-4 rounded-3xl shadow-xl border-4 border-green-600 transform hover:-translate-y-1 active:scale-95 transition duration-200">
@@ -595,7 +610,13 @@
                             <img src="https://i.ytimg.com/vi/WVjsGU5GxUw/maxresdefault.jpg" alt="寫信給聖誕老人影片封面" class="w-full h-full object-cover opacity-90 hover:opacity-100 transition">
                         </div>
                         <div class="text-center">
-                            <h4 class="text-2xl font-bold text-green-800 mb-1 leading-relaxed">✉️ 寫信給他</h4>
+                            <h4 class="text-2xl font-bold text-green-800 mb-1 leading-relaxed">
+                                ✉️ 
+                                <span class="z-block"><span class="z-char">寫</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄒ</span><span class="z-bo-symbol">ㄧ</span><span class="z-bo-symbol">ㄝ</span><span class="z-tone z-tone-right">ˇ</span></span></span>
+                                <span class="z-block"><span class="z-char">信</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄒ</span><span class="z-bo-symbol">ㄧ</span><span class="z-bo-symbol">ㄣ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                                <span class="z-block"><span class="z-char">給</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄍ</span><span class="z-bo-symbol">ㄟ</span><span class="z-tone z-tone-right">ˇ</span></span></span>
+                                <span class="z-block"><span class="z-char">他</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄊ</span><span class="z-bo-symbol">ㄚ</span></span></span>
+                            </h4>
                         </div>
                     </div>
                 </div>
@@ -619,7 +640,17 @@
                 
                 <div class="bg-white/10 p-8 rounded-3xl backdrop-blur-sm">
                     <p class="mb-6 text-2xl leading-loose">
-                        用說的，或是打字，跟我說話！
+                        <span class="z-block"><span class="z-char">用</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄩ</span><span class="z-bo-symbol">ㄥ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                        <span class="z-block"><span class="z-char">說</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄕ</span><span class="z-bo-symbol">ㄨ</span><span class="z-bo-symbol">ㄛ</span></span></span>
+                        <span class="z-block"><span class="z-char">的</span><span class="z-bopomofo"><span class="z-tone z-tone-5">˙</span><span class="z-bo-symbol">ㄉ</span><span class="z-bo-symbol">ㄜ</span></span></span>，
+                        <span class="z-block"><span class="z-char">或</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄏ</span><span class="z-bo-symbol">ㄨ</span><span class="z-bo-symbol">ㄛ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                        <span class="z-block"><span class="z-char">是</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄕ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                        <span class="z-block"><span class="z-char">打</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄉ</span><span class="z-bo-symbol">ㄚ</span><span class="z-tone z-tone-right">ˇ</span></span></span>
+                        <span class="z-block"><span class="z-char">字</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄗ</span><span class="z-tone z-tone-right">ˋ</span></span></span>，
+                        <span class="z-block"><span class="z-char">跟</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄍ</span><span class="z-bo-symbol">ㄣ</span></span></span>
+                        <span class="z-block"><span class="z-char">我</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄨ</span><span class="z-bo-symbol">ㄛ</span><span class="z-tone z-tone-right">ˇ</span></span></span>
+                        <span class="z-block"><span class="z-char">說</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄕ</span><span class="z-bo-symbol">ㄨ</span><span class="z-bo-symbol">ㄛ</span></span></span>
+                        <span class="z-block"><span class="z-char">話</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄏ</span><span class="z-bo-symbol">ㄨ</span><span class="z-bo-symbol">ㄚ</span><span class="z-tone z-tone-right">ˋ</span></span></span>！
                     </p>
                     <div class="flex flex-col gap-6">
                         <div class="relative flex-1">
@@ -629,7 +660,8 @@
                             </button>
                         </div>
                         <button onclick="askSanta()" class="bg-yellow-400 hover:bg-yellow-300 text-red-700 font-bold py-4 px-8 rounded-2xl shadow-lg transform active:scale-95 transition text-2xl whitespace-nowrap leading-relaxed">
-                            送出 💌
+                            <span class="z-block"><span class="z-char">送</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄙ</span><span class="z-bo-symbol">ㄨ</span><span class="z-bo-symbol">ㄥ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                            <span class="z-block"><span class="z-char">出</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄔ</span><span class="z-bo-symbol">ㄨ</span></span></span> 💌
                         </button>
                     </div>
                     
@@ -669,9 +701,29 @@
             <section class="mb-12 bg-green-800 rounded-[2rem] p-6 md:p-10 text-white relative overflow-hidden shadow-2xl border-4 border-yellow-400">
                 <div class="text-center mb-4 relative z-10">
                     <h3 class="text-3xl font-bold mb-2 leading-relaxed">
-                        1. 裝飾聖誕樹
+                        1. 
+                        <span class="z-block"><span class="z-char">裝</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄓ</span><span class="z-bo-symbol">ㄨ</span><span class="z-bo-symbol">ㄤ</span></span></span>
+                        <span class="z-block"><span class="z-char">飾</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄕ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                        <span class="z-block"><span class="z-char">聖</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄕ</span><span class="z-bo-symbol">ㄥ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                        <span class="z-block"><span class="z-char">誕</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄉ</span><span class="z-bo-symbol">ㄢ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                        <span class="z-block"><span class="z-char">樹</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄕ</span><span class="z-bo-symbol">ㄨ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
                     </h3>
-                    <p class="text-lg opacity-80">(用手指把星星、彩球拖到樹上)</p>
+                    <p class="text-lg opacity-80">
+                        (
+                        <span class="z-block"><span class="z-char">用</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄩ</span><span class="z-bo-symbol">ㄥ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                        <span class="z-block"><span class="z-char">手</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄕ</span><span class="z-bo-symbol">ㄡ</span><span class="z-tone z-tone-right">ˇ</span></span></span>
+                        <span class="z-block"><span class="z-char">指</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄓ</span><span class="z-tone z-tone-right">ˇ</span></span></span>
+                        <span class="z-block"><span class="z-char">把</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄅ</span><span class="z-bo-symbol">ㄚ</span><span class="z-tone z-tone-right">ˇ</span></span></span>
+                        <span class="z-block"><span class="z-char">星</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄒ</span><span class="z-bo-symbol">ㄧ</span><span class="z-bo-symbol">ㄥ</span></span></span>
+                        <span class="z-block"><span class="z-char">星</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄒ</span><span class="z-bo-symbol">ㄧ</span><span class="z-bo-symbol">ㄥ</span></span></span>、
+                        <span class="z-block"><span class="z-char">彩</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄘ</span><span class="z-bo-symbol">ㄞ</span><span class="z-tone z-tone-right">ˇ</span></span></span>
+                        <span class="z-block"><span class="z-char">球</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄑ</span><span class="z-bo-symbol">ㄧ</span><span class="z-bo-symbol">ㄡ</span><span class="z-tone z-tone-right">ˊ</span></span></span>
+                        <span class="z-block"><span class="z-char">拖</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄊ</span><span class="z-bo-symbol">ㄨ</span><span class="z-bo-symbol">ㄛ</span></span></span>
+                        <span class="z-block"><span class="z-char">到</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄉ</span><span class="z-bo-symbol">ㄠ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                        <span class="z-block"><span class="z-char">樹</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄕ</span><span class="z-bo-symbol">ㄨ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                        <span class="z-block"><span class="z-char">上</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄕ</span><span class="z-bo-symbol">ㄤ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                        )
+                    </p>
                 </div>
                 
                 <div class="relative bg-white/10 rounded-3xl p-4" style="height: 600px; touch-action: none;" id="decorationGameArea">
@@ -711,9 +763,28 @@
             </button>
             <section class="mb-12 bg-blue-600 rounded-[2rem] p-6 md:p-10 text-white shadow-2xl border-4 border-white relative">
                 <div class="text-center mb-8">
-                    <h3 class="text-3xl font-bold mb-4">2. 記憶翻翻樂</h3>
-                    <div class="text-2xl font-bold text-yellow-300 mb-4">⏳ 時間: <span id="memoryTimer">60</span></div>
-                    <p class="text-xl mb-4">找出一樣的圖片！</p>
+                    <h3 class="text-3xl font-bold mb-4">
+                        2. 
+                        <span class="z-block"><span class="z-char">記</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄐ</span><span class="z-bo-symbol">ㄧ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                        <span class="z-block"><span class="z-char">憶</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄧ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                        <span class="z-block"><span class="z-char">翻</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄈ</span><span class="z-bo-symbol">ㄢ</span></span></span>
+                        <span class="z-block"><span class="z-char">翻</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄈ</span><span class="z-bo-symbol">ㄢ</span></span></span>
+                        <span class="z-block"><span class="z-char">樂</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄌ</span><span class="z-bo-symbol">ㄜ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                    </h3>
+                    <div class="text-2xl font-bold text-yellow-300 mb-4">
+                        ⏳ 
+                        <span class="z-block"><span class="z-char">時</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄕ</span><span class="z-tone z-tone-right">ˊ</span></span></span>
+                        <span class="z-block"><span class="z-char">間</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄐ</span><span class="z-bo-symbol">ㄧ</span><span class="z-bo-symbol">ㄢ</span></span></span>: <span id="memoryTimer">60</span>
+                    </div>
+                    <p class="text-xl mb-4">
+                        <span class="z-block"><span class="z-char">找</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄓ</span><span class="z-bo-symbol">ㄠ</span><span class="z-tone z-tone-right">ˇ</span></span></span>
+                        <span class="z-block"><span class="z-char">出</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄔ</span><span class="z-bo-symbol">ㄨ</span></span></span>
+                        <span class="z-block"><span class="z-char">一</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄧ</span></span></span>
+                        <span class="z-block"><span class="z-char">樣</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄧ</span><span class="z-bo-symbol">ㄤ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                        <span class="z-block"><span class="z-char">的</span><span class="z-bopomofo"><span class="z-tone z-tone-5">˙</span><span class="z-bo-symbol">ㄉ</span><span class="z-bo-symbol">ㄜ</span></span></span>
+                        <span class="z-block"><span class="z-char">圖</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄊ</span><span class="z-bo-symbol">ㄨ</span><span class="z-tone z-tone-right">ˊ</span></span></span>
+                        <span class="z-block"><span class="z-char">片</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄆ</span><span class="z-bo-symbol">ㄧ</span><span class="z-bo-symbol">ㄢ</span><span class="z-tone z-tone-right">ˋ</span></span></span>！
+                    </p>
                     <button onclick="initMemoryGame()" class="bg-white text-blue-700 px-6 py-3 rounded-full font-bold text-lg hover:bg-blue-50 shadow-lg active:scale-95 transition">🔄 重新開始</button>
                 </div>
                 <div class="relative pb-4">
@@ -735,8 +806,29 @@
             </button>
             <section class="mb-16 bg-purple-700 rounded-[2rem] p-6 md:p-10 text-white shadow-2xl border-4 border-pink-400">
                 <div class="text-center mb-6">
-                    <h3 class="text-3xl font-bold mb-2">3. 接禮物大挑戰</h3>
-                    <p class="text-xl">點擊左右兩邊移動聖誕老人！</p>
+                    <h3 class="text-3xl font-bold mb-2">
+                        3. 
+                        <span class="z-block"><span class="z-char">接</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄐ</span><span class="z-bo-symbol">ㄧ</span><span class="z-bo-symbol">ㄝ</span></span></span>
+                        <span class="z-block"><span class="z-char">禮</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄌ</span><span class="z-bo-symbol">ㄧ</span><span class="z-tone z-tone-right">ˇ</span></span></span>
+                        <span class="z-block"><span class="z-char">物</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄨ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                        <span class="z-block"><span class="z-char">大</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄉ</span><span class="z-bo-symbol">ㄚ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                        <span class="z-block"><span class="z-char">挑</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄊ</span><span class="z-bo-symbol">ㄧ</span><span class="z-bo-symbol">ㄠ</span></span></span>
+                        <span class="z-block"><span class="z-char">戰</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄓ</span><span class="z-bo-symbol">ㄢ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                    </h3>
+                    <p class="text-xl">
+                        <span class="z-block"><span class="z-char">點</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄉ</span><span class="z-bo-symbol">ㄧ</span><span class="z-bo-symbol">ㄢ</span><span class="z-tone z-tone-right">ˇ</span></span></span>
+                        <span class="z-block"><span class="z-char">擊</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄐ</span><span class="z-bo-symbol">ㄧ</span><span class="z-tone z-tone-right">ˊ</span></span></span>
+                        <span class="z-block"><span class="z-char">左</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄗ</span><span class="z-bo-symbol">ㄨ</span><span class="z-bo-symbol">ㄛ</span><span class="z-tone z-tone-right">ˇ</span></span></span>
+                        <span class="z-block"><span class="z-char">右</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄧ</span><span class="z-bo-symbol">ㄡ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                        <span class="z-block"><span class="z-char">兩</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄌ</span><span class="z-bo-symbol">ㄧ</span><span class="z-bo-symbol">ㄤ</span><span class="z-tone z-tone-right">ˇ</span></span></span>
+                        <span class="z-block"><span class="z-char">邊</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄅ</span><span class="z-bo-symbol">ㄧ</span><span class="z-bo-symbol">ㄢ</span></span></span>
+                        <span class="z-block"><span class="z-char">移</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄧ</span><span class="z-tone z-tone-right">ˊ</span></span></span>
+                        <span class="z-block"><span class="z-char">動</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄉ</span><span class="z-bo-symbol">ㄨ</span><span class="z-bo-symbol">ㄥ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                        <span class="z-block"><span class="z-char">聖</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄕ</span><span class="z-bo-symbol">ㄥ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                        <span class="z-block"><span class="z-char">誕</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄉ</span><span class="z-bo-symbol">ㄢ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                        <span class="z-block"><span class="z-char">老</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄌ</span><span class="z-bo-symbol">ㄠ</span><span class="z-tone z-tone-right">ˇ</span></span></span>
+                        <span class="z-block"><span class="z-char">人</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄖ</span><span class="z-bo-symbol">ㄣ</span><span class="z-tone z-tone-right">ˊ</span></span></span>！
+                    </p>
                 </div>
                 <div class="relative w-full max-w-2xl mx-auto">
                     <canvas id="gameCanvas" width="600" height="400" class="w-full rounded-2xl border-4 border-purple-300"></canvas>
@@ -745,7 +837,10 @@
                             ▶ 開始遊戲
                         </button>
                     </div>
-                    <div class="absolute top-4 left-6 text-2xl font-bold bg-black/30 px-4 py-2 rounded-xl">得分: <span id="score">0</span></div>
+                    <div class="absolute top-4 left-6 text-2xl font-bold bg-black/30 px-4 py-2 rounded-xl">
+                        <span class="z-block"><span class="z-char">得</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄉ</span><span class="z-bo-symbol">ㄜ</span><span class="z-tone z-tone-right">ˊ</span></span></span>
+                        <span class="z-block"><span class="z-char">分</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄈ</span><span class="z-bo-symbol">ㄣ</span></span></span>: <span id="score">0</span>
+                    </div>
                     <div class="absolute top-4 right-6 text-2xl font-bold bg-black/30 px-4 py-2 rounded-xl">⏳ <span id="catchTimer">60</span></div>
                 </div>
                 <div class="flex justify-center gap-8 mt-8 items-center">
@@ -767,8 +862,27 @@
             </button>
             <section class="mb-16 bg-orange-500 rounded-[2rem] p-6 md:p-10 text-white shadow-2xl border-4 border-yellow-300">
                 <div class="text-center mb-6">
-                    <h3 class="text-3xl font-bold mb-2 leading-relaxed">4. 彩繪聖誕老人</h3>
-                    <p class="text-xl">幫聖誕老人塗上顏色吧！</p>
+                    <h3 class="text-3xl font-bold mb-2 leading-relaxed">
+                        4. 
+                        <span class="z-block"><span class="z-char">彩</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄘ</span><span class="z-bo-symbol">ㄞ</span><span class="z-tone z-tone-right">ˇ</span></span></span>
+                        <span class="z-block"><span class="z-char">繪</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄏ</span><span class="z-bo-symbol">ㄨ</span><span class="z-bo-symbol">ㄟ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                        <span class="z-block"><span class="z-char">聖</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄕ</span><span class="z-bo-symbol">ㄥ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                        <span class="z-block"><span class="z-char">誕</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄉ</span><span class="z-bo-symbol">ㄢ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                        <span class="z-block"><span class="z-char">老</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄌ</span><span class="z-bo-symbol">ㄠ</span><span class="z-tone z-tone-right">ˇ</span></span></span>
+                        <span class="z-block"><span class="z-char">人</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄖ</span><span class="z-bo-symbol">ㄣ</span><span class="z-tone z-tone-right">ˊ</span></span></span>
+                    </h3>
+                    <p class="text-xl">
+                        <span class="z-block"><span class="z-char">幫</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄅ</span><span class="z-bo-symbol">ㄤ</span></span></span>
+                        <span class="z-block"><span class="z-char">聖</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄕ</span><span class="z-bo-symbol">ㄥ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                        <span class="z-block"><span class="z-char">誕</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄉ</span><span class="z-bo-symbol">ㄢ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                        <span class="z-block"><span class="z-char">老</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄌ</span><span class="z-bo-symbol">ㄠ</span><span class="z-tone z-tone-right">ˇ</span></span></span>
+                        <span class="z-block"><span class="z-char">人</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄖ</span><span class="z-bo-symbol">ㄣ</span><span class="z-tone z-tone-right">ˊ</span></span></span>
+                        <span class="z-block"><span class="z-char">塗</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄊ</span><span class="z-bo-symbol">ㄨ</span><span class="z-tone z-tone-right">ˊ</span></span></span>
+                        <span class="z-block"><span class="z-char">上</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄕ</span><span class="z-bo-symbol">ㄤ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                        <span class="z-block"><span class="z-char">顏</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄧ</span><span class="z-bo-symbol">ㄢ</span><span class="z-tone z-tone-right">ˊ</span></span></span>
+                        <span class="z-block"><span class="z-char">色</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄙ</span><span class="z-bo-symbol">ㄜ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                        <span class="z-block"><span class="z-char">吧</span><span class="z-bopomofo"><span class="z-tone z-tone-5">˙</span><span class="z-bo-symbol">ㄅ</span><span class="z-bo-symbol">ㄚ</span></span></span>！
+                    </p>
                 </div>
                 <div class="flex flex-col items-center">
                     <!-- 畫布 -->
@@ -809,12 +923,25 @@
             <section class="mb-16">
                 <div class="flex items-center gap-3 mb-6">
                     <span class="text-3xl">🔍</span>
-                    <h3 class="text-3xl font-bold text-red-700 leading-relaxed">知識翻翻卡</h3>
+                    <h3 class="text-3xl font-bold text-red-700 leading-relaxed">
+                        <span class="z-block"><span class="z-char">知</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄓ</span></span></span>
+                        <span class="z-block"><span class="z-char">識</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄕ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                        <span class="z-block"><span class="z-char">翻</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄈ</span><span class="z-bo-symbol">ㄢ</span></span></span>
+                        <span class="z-block"><span class="z-char">翻</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄈ</span><span class="z-bo-symbol">ㄢ</span></span></span>
+                        <span class="z-block"><span class="z-char">卡</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄎ</span><span class="z-bo-symbol">ㄚ</span><span class="z-tone z-tone-right">ˇ</span></span></span>
+                    </h3>
                 </div>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-6 h-80">
                     <div class="flip-card h-full" onclick="this.classList.toggle('flipped')">
                         <div class="flip-card-inner">
-                            <div class="flip-card-front"><div class="text-7xl mb-4">🎄</div><h4 class="text-2xl font-bold text-gray-700">這是什麼？</h4></div>
+                            <div class="flip-card-front"><div class="text-7xl mb-4">🎄</div>
+                                <h4 class="text-2xl font-bold text-gray-700">
+                                    <span class="z-block"><span class="z-char">這</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄓ</span><span class="z-bo-symbol">ㄜ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                                    <span class="z-block"><span class="z-char">是</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄕ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                                    <span class="z-block"><span class="z-char">什</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄕ</span><span class="z-bo-symbol">ㄜ</span><span class="z-tone z-tone-right">ˊ</span></span></span>
+                                    <span class="z-block"><span class="z-char">麼</span><span class="z-bopomofo"><span class="z-tone z-tone-5">˙</span><span class="z-bo-symbol">ㄇ</span><span class="z-bo-symbol">ㄜ</span></span></span>？
+                                </h4>
+                            </div>
                             <div class="flip-card-back p-4">
                                 <h4 class="text-2xl font-bold text-yellow-300 mb-1 flex flex-wrap justify-center">
                                     <span class="z-block"><span class="z-char">聖</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄕ</span><span class="z-bo-symbol">ㄥ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
@@ -822,13 +949,29 @@
                                     <span class="z-block"><span class="z-char">樹</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄕ</span><span class="z-bo-symbol">ㄨ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
                                 </h4>
                                 <div class="text-lg font-bold text-white font-sans mb-2">Christmas Tree</div>
-                                <p>常青樹代表生命力！</p>
+                                <p>
+                                    <span class="z-block"><span class="z-char">常</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄔ</span><span class="z-bo-symbol">ㄤ</span><span class="z-tone z-tone-right">ˊ</span></span></span>
+                                    <span class="z-block"><span class="z-char">青</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄑ</span><span class="z-bo-symbol">ㄧ</span><span class="z-bo-symbol">ㄥ</span></span></span>
+                                    <span class="z-block"><span class="z-char">樹</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄕ</span><span class="z-bo-symbol">ㄨ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                                    <span class="z-block"><span class="z-char">代</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄉ</span><span class="z-bo-symbol">ㄞ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                                    <span class="z-block"><span class="z-char">表</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄅ</span><span class="z-bo-symbol">ㄧ</span><span class="z-bo-symbol">ㄠ</span><span class="z-tone z-tone-right">ˇ</span></span></span>
+                                    <span class="z-block"><span class="z-char">生</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄕ</span><span class="z-bo-symbol">ㄥ</span></span></span>
+                                    <span class="z-block"><span class="z-char">命</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄇ</span><span class="z-bo-symbol">ㄧ</span><span class="z-bo-symbol">ㄥ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                                    <span class="z-block"><span class="z-char">力</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄌ</span><span class="z-bo-symbol">ㄧ</span><span class="z-tone z-tone-right">ˋ</span></span></span>！
+                                </p>
                             </div>
                         </div>
                     </div>
                     <div class="flip-card h-full" onclick="this.classList.toggle('flipped')">
                         <div class="flip-card-inner">
-                            <div class="flip-card-front"><div class="text-7xl mb-4">🍪</div><h4 class="text-2xl font-bold text-gray-700">這是什麼？</h4></div>
+                            <div class="flip-card-front"><div class="text-7xl mb-4">🍪</div>
+                                <h4 class="text-2xl font-bold text-gray-700">
+                                    <span class="z-block"><span class="z-char">這</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄓ</span><span class="z-bo-symbol">ㄜ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                                    <span class="z-block"><span class="z-char">是</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄕ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                                    <span class="z-block"><span class="z-char">什</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄕ</span><span class="z-bo-symbol">ㄜ</span><span class="z-tone z-tone-right">ˊ</span></span></span>
+                                    <span class="z-block"><span class="z-char">麼</span><span class="z-bopomofo"><span class="z-tone z-tone-5">˙</span><span class="z-bo-symbol">ㄇ</span><span class="z-bo-symbol">ㄜ</span></span></span>？
+                                </h4>
+                            </div>
                             <div class="flip-card-back p-4">
                                 <h4 class="text-2xl font-bold text-yellow-300 mb-1 flex flex-wrap justify-center">
                                     <span class="z-block"><span class="z-char">薑</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄐ</span><span class="z-bo-symbol">ㄧ</span><span class="z-bo-symbol">ㄤ</span></span></span>
@@ -836,13 +979,26 @@
                                     <span class="z-block"><span class="z-char">人</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄖ</span><span class="z-bo-symbol">ㄣ</span><span class="z-tone z-tone-right">ˊ</span></span></span>
                                 </h4>
                                 <div class="text-lg font-bold text-white font-sans mb-2">Gingerbread Man</div>
-                                <p>好吃的餅乾！</p>
+                                <p>
+                                    <span class="z-block"><span class="z-char">好</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄏ</span><span class="z-bo-symbol">ㄠ</span><span class="z-tone z-tone-right">ˇ</span></span></span>
+                                    <span class="z-block"><span class="z-char">吃</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄔ</span></span></span>
+                                    <span class="z-block"><span class="z-char">的</span><span class="z-bopomofo"><span class="z-tone z-tone-5">˙</span><span class="z-bo-symbol">ㄉ</span><span class="z-bo-symbol">ㄜ</span></span></span>
+                                    <span class="z-block"><span class="z-char">餅</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄅ</span><span class="z-bo-symbol">ㄧ</span><span class="z-bo-symbol">ㄥ</span><span class="z-tone z-tone-right">ˇ</span></span></span>
+                                    <span class="z-block"><span class="z-char">乾</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄍ</span><span class="z-bo-symbol">ㄢ</span></span></span>！
+                                </p>
                             </div>
                         </div>
                     </div>
                     <div class="flip-card h-full" onclick="this.classList.toggle('flipped')">
                         <div class="flip-card-inner">
-                            <div class="flip-card-front"><div class="text-7xl mb-4">🧦</div><h4 class="text-2xl font-bold text-gray-700">這是什麼？</h4></div>
+                            <div class="flip-card-front"><div class="text-7xl mb-4">🧦</div>
+                                <h4 class="text-2xl font-bold text-gray-700">
+                                    <span class="z-block"><span class="z-char">這</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄓ</span><span class="z-bo-symbol">ㄜ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                                    <span class="z-block"><span class="z-char">是</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄕ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                                    <span class="z-block"><span class="z-char">什</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄕ</span><span class="z-bo-symbol">ㄜ</span><span class="z-tone z-tone-right">ˊ</span></span></span>
+                                    <span class="z-block"><span class="z-char">麼</span><span class="z-bopomofo"><span class="z-tone z-tone-5">˙</span><span class="z-bo-symbol">ㄇ</span><span class="z-bo-symbol">ㄜ</span></span></span>？
+                                </h4>
+                            </div>
                             <div class="flip-card-back p-4">
                                 <h4 class="text-2xl font-bold text-yellow-300 mb-1 flex flex-wrap justify-center">
                                     <span class="z-block"><span class="z-char">聖</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄕ</span><span class="z-bo-symbol">ㄥ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
@@ -850,20 +1006,42 @@
                                     <span class="z-block"><span class="z-char">襪</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄨ</span><span class="z-bo-symbol">ㄚ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
                                 </h4>
                                 <div class="text-lg font-bold text-white font-sans mb-2">Christmas Stocking</div>
-                                <p>期待收到禮物！</p>
+                                <p>
+                                    <span class="z-block"><span class="z-char">期</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄑ</span><span class="z-bo-symbol">ㄧ</span><span class="z-tone z-tone-right">ˊ</span></span></span>
+                                    <span class="z-block"><span class="z-char">待</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄉ</span><span class="z-bo-symbol">ㄞ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                                    <span class="z-block"><span class="z-char">收</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄕ</span><span class="z-bo-symbol">ㄡ</span></span></span>
+                                    <span class="z-block"><span class="z-char">到</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄉ</span><span class="z-bo-symbol">ㄠ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                                    <span class="z-block"><span class="z-char">禮</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄌ</span><span class="z-bo-symbol">ㄧ</span><span class="z-tone z-tone-right">ˇ</span></span></span>
+                                    <span class="z-block"><span class="z-char">物</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄨ</span><span class="z-tone z-tone-right">ˋ</span></span></span>！
+                                </p>
                             </div>
                         </div>
                     </div>
                     <div class="flip-card h-full" onclick="this.classList.toggle('flipped')">
                         <div class="flip-card-inner">
-                            <div class="flip-card-front"><div class="text-7xl mb-4">🦌</div><h4 class="text-2xl font-bold text-gray-700">這是什麼？</h4></div>
+                            <div class="flip-card-front"><div class="text-7xl mb-4">🦌</div>
+                                <h4 class="text-2xl font-bold text-gray-700">
+                                    <span class="z-block"><span class="z-char">這</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄓ</span><span class="z-bo-symbol">ㄜ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                                    <span class="z-block"><span class="z-char">是</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄕ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                                    <span class="z-block"><span class="z-char">什</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄕ</span><span class="z-bo-symbol">ㄜ</span><span class="z-tone z-tone-right">ˊ</span></span></span>
+                                    <span class="z-block"><span class="z-char">麼</span><span class="z-bopomofo"><span class="z-tone z-tone-5">˙</span><span class="z-bo-symbol">ㄇ</span><span class="z-bo-symbol">ㄜ</span></span></span>？
+                                </h4>
+                            </div>
                             <div class="flip-card-back p-4">
                                 <h4 class="text-2xl font-bold text-yellow-300 mb-1 flex flex-wrap justify-center">
                                     <span class="z-block"><span class="z-char">馴</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄒ</span><span class="z-bo-symbol">ㄩ</span><span class="z-bo-symbol">ㄣ</span><span class="z-tone z-tone-right">ˊ</span></span></span>
                                     <span class="z-block"><span class="z-char">鹿</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄌ</span><span class="z-bo-symbol">ㄨ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
                                 </h4>
                                 <div class="text-lg font-bold text-white font-sans mb-2">Reindeer</div>
-                                <p>幫聖誕老人拉車！</p>
+                                <p>
+                                    <span class="z-block"><span class="z-char">幫</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄅ</span><span class="z-bo-symbol">ㄤ</span></span></span>
+                                    <span class="z-block"><span class="z-char">聖</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄕ</span><span class="z-bo-symbol">ㄥ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                                    <span class="z-block"><span class="z-char">誕</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄉ</span><span class="z-bo-symbol">ㄢ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                                    <span class="z-block"><span class="z-char">老</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄌ</span><span class="z-bo-symbol">ㄠ</span><span class="z-tone z-tone-right">ˇ</span></span></span>
+                                    <span class="z-block"><span class="z-char">人</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄖ</span><span class="z-bo-symbol">ㄣ</span><span class="z-tone z-tone-right">ˊ</span></span></span>
+                                    <span class="z-block"><span class="z-char">拉</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄌ</span><span class="z-bo-symbol">ㄚ</span></span></span>
+                                    <span class="z-block"><span class="z-char">車</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄔ</span><span class="z-bo-symbol">ㄜ</span></span></span>！
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -879,10 +1057,28 @@
             <section class="mb-16 bg-blue-600 rounded-[2rem] p-6 md:p-8 shadow-2xl border-4 border-white text-white">
                 <div class="flex items-center gap-3 mb-6">
                     <span class="text-4xl">✨</span>
-                    <h3 class="text-3xl font-bold leading-relaxed">魔法故事</h3>
+                    <h3 class="text-3xl font-bold leading-relaxed">
+                        <span class="z-block"><span class="z-char">魔</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄇ</span><span class="z-bo-symbol">ㄛ</span><span class="z-tone z-tone-right">ˊ</span></span></span>
+                        <span class="z-block"><span class="z-char">法</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄈ</span><span class="z-bo-symbol">ㄚ</span><span class="z-tone z-tone-right">ˇ</span></span></span>
+                        <span class="z-block"><span class="z-char">故</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄍ</span><span class="z-bo-symbol">ㄨ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                        <span class="z-block"><span class="z-char">事</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄕ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                    </h3>
                 </div>
                 <div class="bg-white/10 p-8 rounded-3xl backdrop-blur-sm">
-                    <p class="mb-8 text-2xl text-center">選一個主角，變出一個小故事！</p>
+                    <p class="mb-8 text-2xl text-center">
+                        <span class="z-block"><span class="z-char">選</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄒ</span><span class="z-bo-symbol">ㄩ</span><span class="z-bo-symbol">ㄢ</span><span class="z-tone z-tone-right">ˇ</span></span></span>
+                        <span class="z-block"><span class="z-char">一</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄧ</span></span></span>
+                        <span class="z-block"><span class="z-char">個</span><span class="z-bopomofo"><span class="z-tone z-tone-5">˙</span><span class="z-bo-symbol">ㄍ</span><span class="z-bo-symbol">ㄜ</span></span></span>
+                        <span class="z-block"><span class="z-char">主</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄓ</span><span class="z-bo-symbol">ㄨ</span><span class="z-tone z-tone-right">ˇ</span></span></span>
+                        <span class="z-block"><span class="z-char">角</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄐ</span><span class="z-bo-symbol">ㄧ</span><span class="z-bo-symbol">ㄠ</span><span class="z-tone z-tone-right">ˇ</span></span></span>，
+                        <span class="z-block"><span class="z-char">變</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄅ</span><span class="z-bo-symbol">ㄧ</span><span class="z-bo-symbol">ㄢ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                        <span class="z-block"><span class="z-char">出</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄔ</span><span class="z-bo-symbol">ㄨ</span></span></span>
+                        <span class="z-block"><span class="z-char">一</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄧ</span></span></span>
+                        <span class="z-block"><span class="z-char">個</span><span class="z-bopomofo"><span class="z-tone z-tone-5">˙</span><span class="z-bo-symbol">ㄍ</span><span class="z-bo-symbol">ㄜ</span></span></span>
+                        <span class="z-block"><span class="z-char">小</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄒ</span><span class="z-bo-symbol">ㄧ</span><span class="z-bo-symbol">ㄠ</span><span class="z-tone z-tone-right">ˇ</span></span></span>
+                        <span class="z-block"><span class="z-char">故</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄍ</span><span class="z-bo-symbol">ㄨ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
+                        <span class="z-block"><span class="z-char">事</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄕ</span><span class="z-tone z-tone-right">ˋ</span></span></span>！
+                    </p>
                     <div class="grid grid-cols-3 gap-6 mb-8">
                         <button onclick="generateStory('馴鹿')" class="bg-white hover:bg-blue-50 text-gray-800 p-6 rounded-2xl shadow-lg transform hover:-translate-y-1 active:scale-95 transition flex flex-col items-center gap-2 group">
                             <span class="text-6xl">🦌</span><span class="font-bold text-xl">馴鹿</span>
@@ -921,10 +1117,8 @@
     </footer>
 
     <script>
-        // --- 注意：在公開的 GitHub 程式碼中放置 API Key 有資安風險 ---
-        // 建議您在 Google Cloud Console 中設定 API Key 的 "HTTP Referrer" 限制，
-        // 只允許您的 GitHub Pages 網址 (例如：https://yourname.github.io/*) 呼叫此 Key。
-        const apiKey = "AIzaSyB3whkh9hoXamjV9Plx19gV47p0UI0eOWU"; 
+        // --- 設定 API Key 為空字串，以符合環境要求 ---
+        const apiKey = ""; 
         
         let lastSantaResponse = ""; 
         let lastStoryResponse = ""; 
@@ -1008,9 +1202,26 @@
             }
         }
 
-        // --- Helper: Gemini TTS ---
+        // 新增：移除 Emoji 的輔助函式 (使用 Unicode 屬性過濾)
+        function removeEmojis(text) {
+            if (!text) return "";
+            // \p{Emoji_Presentation} 匹配大多數可見的 Emoji
+            // \p{Extended_Pictographic} 匹配更廣泛的圖形符號
+            // 替換為空字串，並修剪多餘的空白
+            return text.replace(/\p{Extended_Pictographic}/gu, '')
+                       .replace(/\p{Emoji_Presentation}/gu, '')
+                       .replace(/\s+/g, ' ') // 將多餘的空白變為一個空白
+                       .trim();
+        }
+
+        // --- Helper: Gemini TTS (已優化：過濾 Emoji) ---
         async function playAudioGeneric(text, btnId, loadingId) {
             if (!text) return;
+            
+            // ★ 修改重點：在送去給 AI 唸之前，先移除 Emoji ★
+            const textForSpeech = removeEmojis(text); 
+            // ---------------------------------------------
+
             const btn = document.getElementById(btnId);
             const loading = document.getElementById(loadingId);
             btn.classList.add('hidden');
@@ -1018,7 +1229,8 @@
 
             const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
             const payload = {
-                contents: [{ parts: [{ text: text }] }],
+                // 這裡使用處理過、沒有 Emoji 的文字 (textForSpeech)
+                contents: [{ parts: [{ text: textForSpeech }] }],
                 generationConfig: {
                     responseModalities: ["AUDIO"],
                     speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: "Fenrir" } } } 
@@ -1032,6 +1244,13 @@
                     body: JSON.stringify(payload)
                 });
                 const data = await response.json();
+                
+                // 錯誤處理：如果 API 回傳錯誤 (例如配額不足)
+                if (data.error) {
+                    console.error("TTS API Error:", data.error);
+                    throw new Error(data.error.message);
+                }
+
                 const base64Audio = data.candidates[0].content.parts[0].inlineData.data;
                 const pcmData = atob(base64Audio);
                 const buffer = new ArrayBuffer(pcmData.length);
@@ -1051,7 +1270,8 @@
                 console.error("TTS Error:", e);
                 loading.classList.add('hidden');
                 btn.classList.remove('hidden');
-                alert("語音功能暫時無法使用");
+                // 這裡可以選擇是否要 alert，為了體驗通常建議靜默失敗或顯示小提示
+                // alert("語音功能暫時無法使用"); 
             }
         }
 
@@ -1463,34 +1683,136 @@
         let isPainting = false;
         let currentColor = '#EF4444';
         let brushSize = 5;
-        let santaImgObj = new Image();
+        // 移除原本的圖片物件 let santaImgObj = new Image();
 
         function initPaint() {
             pCtx.lineCap = 'round';
             pCtx.lineJoin = 'round';
             
-            // 使用線上圖片作為範本，確保 GitHub Pages 能讀取
-            santaImgObj.src = "https://cdn.pixabay.com/photo/2016/12/18/18/00/santa-claus-1916536_1280.png"; 
-            
-            santaImgObj.onload = function() {
-                clearPaint();
-            };
+            // 直接開始繪製基本形狀，不需要等待圖片載入
+            clearPaint();
         }
 
         function clearPaint() {
+            // 1. 清除畫布填白
             pCtx.fillStyle = '#FFFFFF';
             pCtx.fillRect(0, 0, pCanvas.width, pCanvas.height);
             
-            if (santaImgObj.complete) {
-                const hRatio = pCanvas.width / santaImgObj.width;
-                const vRatio = pCanvas.height / santaImgObj.height;
-                const ratio = Math.min(hRatio, vRatio);
-                const centerShift_x = (pCanvas.width - santaImgObj.width * ratio) / 2;
-                const centerShift_y = (pCanvas.height - santaImgObj.height * ratio) / 2;
-                
-                pCtx.drawImage(santaImgObj, 0, 0, santaImgObj.width, santaImgObj.height,
-                               centerShift_x, centerShift_y, santaImgObj.width * ratio, santaImgObj.height * ratio);
-            }
+            // 2. 繪製聖誕老人輪廓 (由基本幾何圖形組成)
+            pCtx.save(); // 儲存當前狀態
+            pCtx.strokeStyle = '#000000'; // 黑色輪廓
+            pCtx.lineWidth = 3; // 線條粗細
+            pCtx.fillStyle = '#FFFFFF'; // 內部預設白色 (讓小朋友塗色)
+
+            // --- 身體 (Body) - 大圓角矩形 ---
+            pCtx.beginPath();
+            // 使用簡單的線條畫身體
+            pCtx.moveTo(140, 200); 
+            pCtx.lineTo(260, 200); // 肩膀
+            pCtx.lineTo(270, 350); // 右下
+            pCtx.lineTo(130, 350); // 左下
+            pCtx.closePath();
+            pCtx.fill();
+            pCtx.stroke();
+
+            // --- 皮帶 (Belt) - 矩形 ---
+            pCtx.beginPath();
+            pCtx.rect(135, 270, 130, 30);
+            pCtx.fill();
+            pCtx.stroke();
+            
+            // 皮帶扣 (Buckle) - 小矩形
+            pCtx.beginPath();
+            pCtx.rect(185, 270, 30, 30);
+            pCtx.stroke();
+            pCtx.beginPath();
+            pCtx.rect(190, 275, 20, 20); // 內扣
+            pCtx.stroke();
+
+            // --- 靴子 (Boots) - 圓角矩形 ---
+            // 左腳
+            pCtx.beginPath();
+            pCtx.rect(140, 350, 50, 30); 
+            pCtx.fill();
+            pCtx.stroke();
+            // 右腳
+            pCtx.beginPath();
+            pCtx.rect(210, 350, 50, 30);
+            pCtx.fill();
+            pCtx.stroke();
+
+            // --- 頭部 (Head) - 圓形 ---
+            pCtx.beginPath();
+            pCtx.arc(200, 160, 45, 0, Math.PI * 2);
+            pCtx.fill();
+            pCtx.stroke();
+
+            // --- 鬍子 (Beard) - 倒三角形/曲線 ---
+            pCtx.beginPath();
+            pCtx.moveTo(165, 180);
+            pCtx.quadraticCurveTo(200, 240, 235, 180); // 鬍子弧線
+            pCtx.fill();
+            pCtx.stroke();
+
+            // --- 帽子 (Hat) - 三角形 ---
+            pCtx.beginPath();
+            pCtx.moveTo(150, 130); // 左帽沿
+            pCtx.lineTo(250, 130); // 右帽沿
+            pCtx.lineTo(200, 50);  // 帽頂
+            pCtx.closePath();
+            pCtx.fill();
+            pCtx.stroke();
+            
+            // 帽緣 (Hat brim) - 橢圓
+            pCtx.beginPath();
+            pCtx.ellipse(200, 130, 60, 15, 0, 0, Math.PI * 2);
+            pCtx.fill();
+            pCtx.stroke();
+            
+            // 毛球 (Pom-pom) - 圓形
+            pCtx.beginPath();
+            pCtx.arc(200, 50, 15, 0, Math.PI * 2);
+            pCtx.fill();
+            pCtx.stroke();
+
+            // --- 手臂 (Arms) - 橢圓 ---
+            // 左手
+            pCtx.beginPath();
+            pCtx.ellipse(120, 220, 20, 50, Math.PI / 4, 0, Math.PI * 2);
+            pCtx.fill();
+            pCtx.stroke();
+            // 右手
+            pCtx.beginPath();
+            pCtx.ellipse(280, 220, 20, 50, -Math.PI / 4, 0, Math.PI * 2);
+            pCtx.fill();
+            pCtx.stroke();
+
+            // 手套 (Gloves) - 圓形
+            pCtx.beginPath();
+            pCtx.arc(105, 205, 18, 0, Math.PI * 2); // 左手套
+            pCtx.fill();
+            pCtx.stroke();
+            pCtx.beginPath();
+            pCtx.arc(295, 205, 18, 0, Math.PI * 2); // 右手套
+            pCtx.fill();
+            pCtx.stroke();
+
+            // --- 五官 (Face details) ---
+            pCtx.fillStyle = '#000000'; // 黑色眼睛
+            pCtx.beginPath();
+            pCtx.arc(185, 155, 4, 0, Math.PI * 2); // 左眼
+            pCtx.fill();
+            pCtx.beginPath();
+            pCtx.arc(215, 155, 4, 0, Math.PI * 2); // 右眼
+            pCtx.fill();
+            
+            pCtx.fillStyle = '#FFCCCB'; // 粉紅鼻子
+            pCtx.beginPath();
+            pCtx.arc(200, 165, 7, 0, Math.PI * 2); // 鼻子
+            pCtx.fill();
+            pCtx.stroke(); // 鼻子框線
+
+            pCtx.restore(); // 恢復狀態，不影響後續畫筆顏色
         }
 
         pCanvas.addEventListener('mousedown', startPaint);
