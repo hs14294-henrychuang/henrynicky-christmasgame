@@ -1117,9 +1117,16 @@
     </footer>
 
     <script>
-        // --- 設定 API Key 為空字串，以符合環境要求 ---
+        // --- 設定 API Key ---
+        // ⚠️ 重要提示：
+        // 1. 在這裡預覽時，請保留下方為空字串 "" (系統會自動處理)。
+        // 2. 若要部署到 GitHub Pages，請將 "" 替換成您自己的 API Key。
+        //    申請網址：https://aistudio.google.com/app/apikey
         const apiKey = "AIzaSyB3whkh9hoXamjV9Plx19gV47p0UI0eOWU"; 
         
+        // 移除檢查邏輯，以免擋住預覽環境的自動注入
+        // if (apiKey === "請在此填入您的_API_KEY") { ... }
+
         let lastSantaResponse = ""; 
         let lastStoryResponse = ""; 
         let studentName = "";
@@ -1182,14 +1189,22 @@
 
         // --- Helper: Gemini API ---
         async function callGemini(prompt) {
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            // 移除 API Key 檢查，讓預覽環境也能運作
+            // if (!apiKey ... ) ...
+            
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
             try {
                 const response = await fetch(url, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
                 });
+                
+                if (response.status === 403) {
+                    return "鑰匙權限不足喔！(請檢查 API Key 網域限制)";
+                }
                 if (!response.ok) throw new Error(`API Error: ${response.status}`);
+                
                 const data = await response.json();
                 if (data.candidates && data.candidates.length > 0) {
                     return data.candidates[0].content.parts[0].text;
@@ -1205,74 +1220,47 @@
         // 新增：移除 Emoji 的輔助函式 (使用 Unicode 屬性過濾)
         function removeEmojis(text) {
             if (!text) return "";
-            // \p{Emoji_Presentation} 匹配大多數可見的 Emoji
-            // \p{Extended_Pictographic} 匹配更廣泛的圖形符號
-            // 替換為空字串，並修剪多餘的空白
             return text.replace(/\p{Extended_Pictographic}/gu, '')
                        .replace(/\p{Emoji_Presentation}/gu, '')
-                       .replace(/\s+/g, ' ') // 將多餘的空白變為一個空白
+                       .replace(/\s+/g, ' ') 
                        .trim();
         }
 
-        // --- Helper: Gemini TTS (已優化：過濾 Emoji) ---
-        async function playAudioGeneric(text, btnId, loadingId) {
+        // --- Helper: TTS (已修正為 Browser Native) ---
+        // 使用瀏覽器內建語音，避免 API 403 錯誤，且完全免費
+        function playAudioGeneric(text, btnId, loadingId) {
             if (!text) return;
+            const textForSpeech = removeEmojis(text); // 依然過濾 Emoji
             
-            // ★ 修改重點：在送去給 AI 唸之前，先移除 Emoji ★
-            const textForSpeech = removeEmojis(text); 
-            // ---------------------------------------------
-
             const btn = document.getElementById(btnId);
             const loading = document.getElementById(loadingId);
+            
+            // 顯示讀取中
             btn.classList.add('hidden');
             loading.classList.remove('hidden');
 
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
-            const payload = {
-                // 這裡使用處理過、沒有 Emoji 的文字 (textForSpeech)
-                contents: [{ parts: [{ text: textForSpeech }] }],
-                generationConfig: {
-                    responseModalities: ["AUDIO"],
-                    speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: "Fenrir" } } } 
-                }
+            // 使用 Web Speech API
+            const utterance = new SpeechSynthesisUtterance(textForSpeech);
+            utterance.lang = 'zh-TW'; // 設定中文
+            utterance.rate = 0.9;     // 稍微放慢一點給小朋友聽
+            utterance.pitch = 1.0;
+            
+            // 當唸完時
+            utterance.onend = () => {
+                loading.classList.add('hidden');
+                btn.classList.remove('hidden');
             };
-
-            try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                const data = await response.json();
-                
-                // 錯誤處理：如果 API 回傳錯誤 (例如配額不足)
-                if (data.error) {
-                    console.error("TTS API Error:", data.error);
-                    throw new Error(data.error.message);
-                }
-
-                const base64Audio = data.candidates[0].content.parts[0].inlineData.data;
-                const pcmData = atob(base64Audio);
-                const buffer = new ArrayBuffer(pcmData.length);
-                const view = new Uint8Array(buffer);
-                for (let i = 0; i < pcmData.length; i++) view[i] = pcmData.charCodeAt(i);
-                
-                const wavBlob = pcmToWav(view, 24000); 
-                const audioUrl = URL.createObjectURL(wavBlob);
-                const audio = new Audio(audioUrl);
-                audio.play();
-                
-                audio.onended = () => {
-                   loading.classList.add('hidden');
-                   btn.classList.remove('hidden');
-                };
-            } catch (e) {
+            
+            // 當發生錯誤時
+            utterance.onerror = (e) => {
                 console.error("TTS Error:", e);
                 loading.classList.add('hidden');
                 btn.classList.remove('hidden');
-                // 這裡可以選擇是否要 alert，為了體驗通常建議靜默失敗或顯示小提示
-                // alert("語音功能暫時無法使用"); 
-            }
+            };
+
+            // 停止之前的發音並開始新的
+            window.speechSynthesis.cancel();
+            window.speechSynthesis.speak(utterance);
         }
 
         async function playSantaAudio() {
@@ -1281,28 +1269,6 @@
 
         async function playStoryAudio() {
             playAudioGeneric(lastStoryResponse, 'playStoryBtn', 'storyAudioLoading');
-        }
-
-        function pcmToWav(pcmData, sampleRate) {
-            const header = new ArrayBuffer(44);
-            const view = new DataView(header);
-            writeString(view, 0, 'RIFF');
-            view.setUint32(4, 36 + pcmData.length, true);
-            writeString(view, 8, 'WAVE');
-            writeString(view, 12, 'fmt ');
-            view.setUint32(16, 16, true);
-            view.setUint16(20, 1, true); 
-            view.setUint16(22, 1, true); 
-            view.setUint32(24, sampleRate, true);
-            view.setUint32(28, sampleRate * 2, true);
-            view.setUint16(32, 2, true);
-            view.setUint16(34, 16, true); 
-            writeString(view, 36, 'data');
-            view.setUint32(40, pcmData.length, true);
-            return new Blob([header, pcmData], { type: 'audio/wav' });
-        }
-        function writeString(view, offset, string) {
-            for (let i = 0; i < string.length; i++) view.setUint8(offset + i, string.charCodeAt(i));
         }
 
         function startListening() {
