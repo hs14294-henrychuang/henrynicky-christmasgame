@@ -1180,16 +1180,22 @@
             container.onclick = null; 
         }
 
-        // --- Helper: Gemini API ---
+        // --- Helper: Gemini API (改為穩定版模型) ---
         async function callGemini(prompt) {
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            // 改用穩定版 gemini-1.5-flash，解決 Github 上權限不足的問題
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
             try {
                 const response = await fetch(url, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
                 });
-                if (!response.ok) throw new Error(`API Error: ${response.status}`);
+                
+                if (!response.ok) {
+                    console.error(`API Error: ${response.status}`);
+                    return "聖誕老公公現在有點忙，請稍後再試試看喔！";
+                }
+                
                 const data = await response.json();
                 if (data.candidates && data.candidates.length > 0) {
                     return data.candidates[0].content.parts[0].text;
@@ -1198,7 +1204,7 @@
                 }
             } catch (e) { 
                 console.error(e); 
-                return "聖誕老公公正在忙線中...(請確認網路或 API Key)"; 
+                return "網路連線有點問題，請檢查網路喔！"; 
             }
         }
 
@@ -1214,64 +1220,53 @@
                        .trim();
         }
 
-        // --- Helper: Gemini TTS (已優化：過濾 Emoji) ---
-        async function playAudioGeneric(text, btnId, loadingId) {
+        // --- Helper: TTS (改用瀏覽器內建語音，解決 API 403 錯誤) ---
+        function playAudioGeneric(text, btnId, loadingId) {
             if (!text) return;
             
-            // ★ 修改重點：在送去給 AI 唸之前，先移除 Emoji ★
+            // 過濾 Emoji
             const textForSpeech = removeEmojis(text); 
-            // ---------------------------------------------
 
             const btn = document.getElementById(btnId);
             const loading = document.getElementById(loadingId);
+            
+            // 切換狀態顯示
             btn.classList.add('hidden');
             loading.classList.remove('hidden');
 
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
-            const payload = {
-                // 這裡使用處理過、沒有 Emoji 的文字 (textForSpeech)
-                contents: [{ parts: [{ text: textForSpeech }] }],
-                generationConfig: {
-                    responseModalities: ["AUDIO"],
-                    speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: "Fenrir" } } } 
-                }
-            };
-
+            // 使用瀏覽器內建 Web Speech API
             try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                const data = await response.json();
+                const utterance = new SpeechSynthesisUtterance(textForSpeech);
+                utterance.lang = 'zh-TW'; // 設定中文
+                utterance.rate = 0.9;     // 稍微放慢語速適合小朋友
+                utterance.pitch = 1.0;
                 
-                // 錯誤處理：如果 API 回傳錯誤 (例如配額不足)
-                if (data.error) {
-                    console.error("TTS API Error:", data.error);
-                    throw new Error(data.error.message);
-                }
+                // 嘗試尋找最佳的中文語音
+                const voices = window.speechSynthesis.getVoices();
+                // 優先尋找 Google 中文語音 (Android/Chrome 常見)，聽起來比較自然
+                const googleVoice = voices.find(v => v.name.includes("Google") && v.lang.includes("zh-TW"));
+                if (googleVoice) utterance.voice = googleVoice;
 
-                const base64Audio = data.candidates[0].content.parts[0].inlineData.data;
-                const pcmData = atob(base64Audio);
-                const buffer = new ArrayBuffer(pcmData.length);
-                const view = new Uint8Array(buffer);
-                for (let i = 0; i < pcmData.length; i++) view[i] = pcmData.charCodeAt(i);
-                
-                const wavBlob = pcmToWav(view, 24000); 
-                const audioUrl = URL.createObjectURL(wavBlob);
-                const audio = new Audio(audioUrl);
-                audio.play();
-                
-                audio.onended = () => {
+                utterance.onend = () => {
                    loading.classList.add('hidden');
                    btn.classList.remove('hidden');
                 };
+                
+                utterance.onerror = (e) => {
+                    console.error("Speech Error:", e);
+                    loading.classList.add('hidden');
+                    btn.classList.remove('hidden');
+                };
+
+                // 播放前先取消之前的
+                window.speechSynthesis.cancel(); 
+                window.speechSynthesis.speak(utterance);
+
             } catch (e) {
-                console.error("TTS Error:", e);
+                console.error("TTS Setup Error:", e);
                 loading.classList.add('hidden');
                 btn.classList.remove('hidden');
-                // 這裡可以選擇是否要 alert，為了體驗通常建議靜默失敗或顯示小提示
-                // alert("語音功能暫時無法使用"); 
+                // 靜默失敗或 alert
             }
         }
 
@@ -1283,23 +1278,10 @@
             playAudioGeneric(lastStoryResponse, 'playStoryBtn', 'storyAudioLoading');
         }
 
+        // 下方是不再需要的舊版 pcmToWav，因為改用瀏覽器內建語音了，但保留不刪除避免錯誤引用，反正不會被呼叫到
         function pcmToWav(pcmData, sampleRate) {
-            const header = new ArrayBuffer(44);
-            const view = new DataView(header);
-            writeString(view, 0, 'RIFF');
-            view.setUint32(4, 36 + pcmData.length, true);
-            writeString(view, 8, 'WAVE');
-            writeString(view, 12, 'fmt ');
-            view.setUint32(16, 16, true);
-            view.setUint16(20, 1, true); 
-            view.setUint16(22, 1, true); 
-            view.setUint32(24, sampleRate, true);
-            view.setUint32(28, sampleRate * 2, true);
-            view.setUint16(32, 2, true);
-            view.setUint16(34, 16, true); 
-            writeString(view, 36, 'data');
-            view.setUint32(40, pcmData.length, true);
-            return new Blob([header, pcmData], { type: 'audio/wav' });
+            // ... (保留舊程式碼結構以免報錯) ...
+            return new Blob([], { type: 'audio/wav' });
         }
         function writeString(view, offset, string) {
             for (let i = 0; i < string.length; i++) view.setUint8(offset + i, string.charCodeAt(i));
