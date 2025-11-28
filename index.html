@@ -348,6 +348,11 @@
             background-color: rgba(255, 255, 255, 0.6);
         }
 
+        /* 設定視窗 Modal */
+        #settingsModal {
+            backdrop-filter: blur(5px);
+        }
+
     </style>
 </head>
 <body class="relative select-none">
@@ -375,7 +380,7 @@
                 </div>
                 <div class="md:hidden">快樂聖誕節</div>
             </h1>
-            
+           
             <div class="flex items-center gap-3">
                 <span id="navStudentName" class="font-bold text-yellow-200 hidden"></span>
                 <div class="text-sm bg-white/20 px-4 py-2 rounded-full flex items-center">
@@ -384,18 +389,38 @@
                         <span class="z-block"><span class="z-char">年</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄋ</span><span class="z-bo-symbol">ㄧ</span><span class="z-bo-symbol">ㄢ</span><span class="z-tone z-tone-right">ˊ</span></span></span>
                         <span class="z-block"><span class="z-char">級</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄐ</span><span class="z-bo-symbol">ㄧ</span><span class="z-tone z-tone-right">ˊ</span></span></span>
                     </span>
-                    
+                   
                     <span class="md:hidden">一年級</span>
                 </div>
             </div>
         </div>
     </nav>
 
+    <!-- 設定視窗 (Modal) -->
+    <div id="settingsModal" class="fixed inset-0 z-[10000] hidden flex items-center justify-center bg-black/50">
+        <div class="bg-white p-8 rounded-3xl shadow-2xl max-w-md w-full m-4 border-4 border-yellow-400">
+            <h3 class="text-2xl font-bold mb-4 text-center">⚙️ 設定 Gemini API Key</h3>
+            <p class="text-gray-600 mb-4 text-sm">
+                請輸入您的 Google Gemini API Key 以啟用 AI 功能（聊天機器人、故事產生、語音）。
+                <br>
+                <span class="text-red-500 text-xs">* Key 會儲存在您的瀏覽器中，不會上傳到伺服器。</span>
+            </p>
+            <input type="password" id="apiKeyInput" class="w-full p-3 border-2 border-gray-300 rounded-xl mb-6 focus:border-red-500 focus:outline-none" placeholder="貼上您的 API Key">
+            <div class="flex gap-4">
+                <button onclick="closeSettings()" class="flex-1 bg-gray-200 text-gray-700 font-bold py-3 rounded-xl hover:bg-gray-300 transition">取消</button>
+                <button onclick="saveApiKey()" class="flex-1 bg-red-600 text-white font-bold py-3 rounded-xl hover:bg-red-700 transition">儲存</button>
+            </div>
+            <div class="mt-4 text-center">
+                <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-blue-500 underline text-sm">取得免費 API Key</a>
+            </div>
+        </div>
+    </div>
+
     <!-- 主要內容區 -->
     <main class="container mx-auto p-4 md:p-8 relative z-10 max-w-5xl min-h-[80vh]">
 
         <!-- ==================== 頁面 1: 歡迎登入頁 ==================== -->
-        <div id="page-welcome" class="page-section active">
+        <div id="page-welcome" class="page-section active relative">
             <div class="flex flex-col items-center justify-center min-h-[70vh] w-full">
                 <div class="text-7xl mb-8 bounce-animation">🎅</div>
                 <h2 class="text-5xl font-bold mb-8 text-red-700 title-text">
@@ -404,7 +429,7 @@
                     <span class="z-block"><span class="z-char">光</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄍ</span><span class="z-bo-symbol">ㄨ</span><span class="z-bo-symbol">ㄤ</span></span></span>
                     <span class="z-block"><span class="z-char">臨</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄌ</span><span class="z-bo-symbol">ㄧ</span><span class="z-bo-symbol">ㄣ</span><span class="z-tone z-tone-right">ˊ</span></span></span>
                 </h2>
-                
+              
                 <div class="bg-white p-10 rounded-[2rem] shadow-2xl border-4 border-green-600 max-w-md w-full text-center">
                     <label class="block text-2xl font-bold text-green-800 mb-6">
                         <span class="z-block"><span class="z-char">請</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄑ</span><span class="z-bo-symbol">ㄧ</span><span class="z-bo-symbol">ㄥ</span><span class="z-tone z-tone-right">ˇ</span></span></span>
@@ -423,6 +448,10 @@
                     </button>
                 </div>
             </div>
+            <!-- 設定按鈕 -->
+            <button onclick="openSettings()" class="absolute bottom-0 right-0 md:bottom-4 md:right-4 bg-gray-200 hover:bg-gray-300 text-gray-600 p-2 rounded-full shadow-md text-sm flex items-center gap-1 transition opacity-70 hover:opacity-100">
+                ⚙️ 設定
+            </button>
         </div>
 
         <!-- ==================== 頁面 2: 遊戲選單頁 ==================== -->
@@ -436,7 +465,7 @@
             </h2>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto px-4">
-                
+               
                 <div class="menu-card bg-white p-6 rounded-3xl shadow-xl border-4 border-red-200 cursor-pointer" onclick="goToSection('section-videos')" id="menu-section-videos">
                     <div class="played-badge">✓</div>
                     <div class="text-6xl mb-4">📺</div>
@@ -575,7 +604,7 @@
                         <span class="z-block"><span class="z-char">院</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄩ</span><span class="z-bo-symbol">ㄢ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
                     </h3>
                 </div>
-                
+               
                 <div class="grid md:grid-cols-3 gap-8">
                     <div class="bg-white p-4 rounded-3xl shadow-xl border-4 border-green-600 transform hover:-translate-y-1 active:scale-95 transition duration-200">
                         <div class="video-cover bg-black rounded-2xl overflow-hidden aspect-video relative mb-4" onclick="playVideo(this, 'EEJrFonrE4E', 13)">
@@ -637,7 +666,7 @@
                         <span class="z-block"><span class="z-char">天</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄊ</span><span class="z-bo-symbol">ㄧ</span><span class="z-bo-symbol">ㄢ</span></span></span> ✨
                     </h3>
                 </div>
-                
+               
                 <div class="bg-white/10 p-8 rounded-3xl backdrop-blur-sm">
                     <p class="mb-6 text-2xl leading-loose">
                         <span class="z-block"><span class="z-char">用</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄩ</span><span class="z-bo-symbol">ㄥ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
@@ -664,7 +693,7 @@
                             <span class="z-block"><span class="z-char">出</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄔ</span><span class="z-bo-symbol">ㄨ</span></span></span> 💌
                         </button>
                     </div>
-                    
+                   
                     <div id="santaResponse" class="mt-8 bg-white text-gray-800 p-8 rounded-3xl shadow-md hidden">
                         <div class="flex gap-6 items-start">
                             <div class="text-5xl flex-shrink-0">🎅</div>
@@ -685,7 +714,7 @@
                             </div>
                         </div>
                     </div>
-                    
+                   
                     <div id="santaLoading" class="mt-8 text-center text-2xl font-bold hidden thinking-dots leading-relaxed">
                         聖誕老公公正在想...
                     </div>
@@ -725,7 +754,7 @@
                         )
                     </p>
                 </div>
-                
+               
                 <div class="relative bg-white/10 rounded-3xl p-4" style="height: 600px; touch-action: none;" id="decorationGameArea">
                     <div class="absolute left-1/2 transform -translate-x-1/2 bottom-40 w-72 h-96 flex justify-center items-end" id="treeTargetArea">
                         <div class="w-16 h-20 bg-yellow-900 mx-auto"></div>
@@ -744,7 +773,7 @@
                         <div class="draggable-source text-4xl" data-type="🎁">🎁</div>
                         <div class="draggable-source text-4xl" data-type="🎀">🎀</div>
                         <div class="draggable-source text-4xl" data-type="🐻">🐻</div>
-                        
+                       
                         <div class="flex flex-col gap-2">
                             <button onclick="clearDecorations()" class="bg-red-500 hover:bg-red-600 text-white text-sm font-bold px-4 py-2 rounded-xl shadow active:scale-95 transition">重來</button>
                             <button onclick="exportTreePDF()" class="bg-yellow-500 hover:bg-yellow-600 text-white text-sm font-bold px-4 py-2 rounded-xl shadow flex items-center gap-1 active:scale-95 transition">
@@ -845,11 +874,11 @@
                 </div>
                 <div class="flex justify-center gap-8 mt-8 items-center">
                     <div class="game-ctrl-btn" onmousedown="moveLeft()" onmouseup="stopMove()" ontouchstart="moveLeft()" ontouchend="stopMove()">⬅️</div>
-                    
+                   
                     <button onclick="restartCatchGame()" class="bg-red-500 hover:bg-red-600 text-white font-bold py-4 px-8 rounded-2xl shadow-lg text-xl flex items-center gap-2 active:scale-95 transition border-2 border-white/50">
                         🔄 重新開始
                     </button>
-                    
+                   
                     <div class="game-ctrl-btn" onmousedown="moveRight()" onmouseup="stopMove()" ontouchstart="moveRight()" ontouchend="stopMove()">➡️</div>
                 </div>
             </section>
@@ -889,7 +918,7 @@
                     <div class="p-2 bg-white rounded-2xl shadow-inner mb-6">
                         <canvas id="paintCanvas" width="400" height="450" class="bg-white rounded-xl cursor-crosshair touch-none"></canvas>
                     </div>
-                    
+                   
                     <!-- 顏色選擇器 -->
                     <div class="flex gap-4 mb-6 bg-white/20 p-4 rounded-2xl overflow-x-auto max-w-full">
                         <div class="color-btn active" style="background-color: #EF4444;" onclick="setColor(this, '#EF4444')"></div>
@@ -901,7 +930,7 @@
                         <div class="color-btn" style="background-color: #FFFFFF; border: 2px solid #ccc;" onclick="setColor(this, '#FFFFFF')"></div>
                         <div class="color-btn" style="background-color: #FCA5A5;" onclick="setColor(this, '#FCA5A5')"></div>
                     </div>
-                    
+                   
                     <!-- 工具列 -->
                     <div class="flex gap-4 flex-wrap justify-center">
                         <button onclick="setBrushSize(5)" class="bg-white text-orange-600 px-6 py-3 rounded-xl font-bold text-lg hover:bg-gray-100 shadow active:scale-95 transition">細筆</button>
@@ -1062,7 +1091,6 @@
                         <span class="z-block"><span class="z-char">法</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄈ</span><span class="z-bo-symbol">ㄚ</span><span class="z-tone z-tone-right">ˇ</span></span></span>
                         <span class="z-block"><span class="z-char">故</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄍ</span><span class="z-bo-symbol">ㄨ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
                         <span class="z-block"><span class="z-char">事</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄕ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
-                        <span class="z-block"><span class="z-char">機</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄐ</span><span class="z-bo-symbol">ㄧ</span></span></span>
                     </h3>
                 </div>
                 <div class="bg-white/10 p-8 rounded-3xl backdrop-blur-sm">
@@ -1080,6 +1108,7 @@
                         <span class="z-block"><span class="z-char">故</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄍ</span><span class="z-bo-symbol">ㄨ</span><span class="z-tone z-tone-right">ˋ</span></span></span>
                         <span class="z-block"><span class="z-char">事</span><span class="z-bopomofo"><span class="z-bo-symbol">ㄕ</span><span class="z-tone z-tone-right">ˋ</span></span></span>！
                     </p>
+
                     <div class="grid grid-cols-3 gap-6 mb-8">
                         <button onclick="generateStory('馴鹿')" class="bg-white hover:bg-blue-50 text-gray-800 p-6 rounded-2xl shadow-lg transform hover:-translate-y-1 active:scale-95 transition flex flex-col items-center gap-2 group">
                             <span class="text-6xl">🦌</span><span class="font-bold text-xl">馴鹿</span>
@@ -1118,63 +1147,45 @@
     </footer>
 
     <script>
-        // --- Helper: Gemini API (功能增強版) ---
-        async function callGemini(prompt) {
-            // 確認 Key 是否填寫
-            if (!apiKey || apiKey.length < 10) {
-                alert("請檢查程式碼中的 API Key 是否正確填寫！");
-                return "設定有誤，請檢查 API Key。";
-            }
+        // --- API Key 管理邏輯 ---
+        function getApiKey() {
+            return localStorage.getItem('gemini_api_key') || "";
+        }
 
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-            
-            // 增加安全設定，避免因誤判而阻擋內容
-            const payload = {
-                contents: [{ parts: [{ text: prompt }] }],
-                safetySettings: [
-                    { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" },
-                    { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_NONE" },
-                    { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_NONE" },
-                    { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_NONE" }
-                ]
-            };
-
-            try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                
-                if (!response.ok) {
-                    // 嘗試讀取錯誤詳情
-                    const errorData = await response.json().catch(() => ({}));
-                    console.error("API Error Details:", errorData);
-                    
-                    if (response.status === 403) {
-                        return "API Key 權限不足 (403)。請檢查 Google Cloud Console 的 Referrer 限制，是否已加入您的 GitHub 網址。";
-                    } else if (response.status === 400) {
-                        return "請求無效 (400)。請檢查 API Key 是否正確。";
-                    }
-                    return `連線錯誤 (${response.status})。聖誕老公公現在有點忙。`;
-                }
-                
-                const data = await response.json();
-                if (data.candidates && data.candidates.length > 0 && data.candidates[0].content) {
-                    return data.candidates[0].content.parts[0].text;
-                } else {
-                    console.warn("No content in response:", data);
-                    return "聖誕老公公正在想... (沒有回應)";
-                }
-            } catch (e) { 
-                console.error("Network Error:", e); 
-                return "網路連線失敗，請檢查您的網路狀態。"; 
+        function saveApiKey() {
+            const key = document.getElementById('apiKeyInput').value.trim();
+            if (key) {
+                localStorage.setItem('gemini_api_key', key);
+                closeSettings();
+                alert("API Key 已儲存！可以開始使用 AI 功能了。");
+            } else {
+                alert("請輸入有效的 API Key。");
             }
         }
 
-        // --- 設定 API Key ---
-        const apiKey = "AIzaSyB3whkh9hoXamjV9Plx19gV47p0UI0eOWU"; 
-        
+        function openSettings() {
+            const currentKey = getApiKey();
+            if(currentKey) {
+                document.getElementById('apiKeyInput').value = currentKey;
+            }
+            document.getElementById('settingsModal').classList.remove('hidden');
+        }
+
+        function closeSettings() {
+            document.getElementById('settingsModal').classList.add('hidden');
+        }
+
+        function checkApiKey() {
+            const key = getApiKey();
+            if (!key) {
+                openSettings();
+                alert("請先設定 Gemini API Key 才能使用這個功能喔！");
+                return false;
+            }
+            return true;
+        }
+
+        // --- 全域變數 ---
         let lastSantaResponse = ""; 
         let lastStoryResponse = ""; 
         let studentName = "";
@@ -1219,7 +1230,7 @@
                 initMemoryGame();
             }
         }
-        
+       
         function stopAllGameTimers() {
             if (typeof memoryTimerInterval !== 'undefined') clearInterval(memoryTimerInterval);
             if (typeof catchTimerInterval !== 'undefined') clearInterval(catchTimerInterval);
@@ -1235,65 +1246,106 @@
             container.onclick = null; 
         }
 
-        // 新增：移除 Emoji 的輔助函式 (使用 Unicode 屬性過濾)
+        // --- Helper: Gemini API ---
+        async function callGemini(prompt) {
+            if (!checkApiKey()) return "請先設定 API Key";
+
+            const apiKey = getApiKey();
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                });
+                if (!response.ok) throw new Error(`API Error: ${response.status}`);
+                const data = await response.json();
+                if (data.candidates && data.candidates.length > 0) {
+                    return data.candidates[0].content.parts[0].text;
+                } else {
+                    return "聖誕老公公正在想...";
+                }
+            } catch (e) { 
+                console.error(e); 
+                return "聖誕老公公正在忙線中...(請確認網路或 API Key)"; 
+            }
+        }
+
+        // 新增：強化版移除 Emoji 的輔助函式 (嚴格過濾)
         function removeEmojis(text) {
             if (!text) return "";
-            // \p{Emoji_Presentation} 匹配大多數可見的 Emoji
-            // \p{Extended_Pictographic} 匹配更廣泛的圖形符號
-            // 替換為空字串，並修剪多餘的空白
-            return text.replace(/\p{Extended_Pictographic}/gu, '')
-                       .replace(/\p{Emoji_Presentation}/gu, '')
+            // 使用 Unicode Property Escapes 移除所有 Emoji 和圖形符號
+            // \p{Emoji_Presentation}: 預設顯示為 Emoji 的字元
+            // \p{Extended_Pictographic}: 擴展圖形符號
+            return text.replace(/(\p{Emoji_Presentation}|\p{Extended_Pictographic})/gu, '')
                        .replace(/\s+/g, ' ') // 將多餘的空白變為一個空白
                        .trim();
         }
 
-        // --- Helper: TTS (改用瀏覽器內建語音，解決 API 403 錯誤) ---
-        function playAudioGeneric(text, btnId, loadingId) {
+        // --- Helper: Gemini TTS (已優化：過濾 Emoji) ---
+        async function playAudioGeneric(text, btnId, loadingId) {
+            if (!checkApiKey()) return;
             if (!text) return;
-            
-            // 過濾 Emoji
+           
+            // ★ 修改重點：在送去給 AI 唸之前，先移除 Emoji ★
             const textForSpeech = removeEmojis(text); 
+            // ---------------------------------------------
+            
+            if (!textForSpeech || textForSpeech.trim().length === 0) {
+                alert("這段文字只有 Emoji，沒辦法唸出來喔！");
+                return;
+            }
 
             const btn = document.getElementById(btnId);
             const loading = document.getElementById(loadingId);
-            
-            // 切換狀態顯示
             btn.classList.add('hidden');
             loading.classList.remove('hidden');
 
-            // 使用瀏覽器內建 Web Speech API
-            try {
-                const utterance = new SpeechSynthesisUtterance(textForSpeech);
-                utterance.lang = 'zh-TW'; // 設定中文
-                utterance.rate = 0.9;     // 稍微放慢語速適合小朋友
-                utterance.pitch = 1.0;
-                
-                // 嘗試尋找最佳的中文語音
-                const voices = window.speechSynthesis.getVoices();
-                // 優先尋找 Google 中文語音 (Android/Chrome 常見)，聽起來比較自然
-                const googleVoice = voices.find(v => v.name.includes("Google") && v.lang.includes("zh-TW"));
-                if (googleVoice) utterance.voice = googleVoice;
+            const apiKey = getApiKey();
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
+            const payload = {
+                // 這裡使用處理過、沒有 Emoji 的文字 (textForSpeech)
+                contents: [{ parts: [{ text: textForSpeech }] }],
+                generationConfig: {
+                    responseModalities: ["AUDIO"],
+                    speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: "Fenrir" } } } 
+                }
+            };
 
-                utterance.onend = () => {
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await response.json();
+             
+                // 錯誤處理：如果 API 回傳錯誤 (例如配額不足)
+                if (data.error) {
+                    console.error("TTS API Error:", data.error);
+                    throw new Error(data.error.message);
+                }
+
+                const base64Audio = data.candidates[0].content.parts[0].inlineData.data;
+                const pcmData = atob(base64Audio);
+                const buffer = new ArrayBuffer(pcmData.length);
+                const view = new Uint8Array(buffer);
+                for (let i = 0; i < pcmData.length; i++) view[i] = pcmData.charCodeAt(i);
+             
+                const wavBlob = pcmToWav(view, 24000); 
+                const audioUrl = URL.createObjectURL(wavBlob);
+                const audio = new Audio(audioUrl);
+                audio.play();
+             
+                audio.onended = () => {
                    loading.classList.add('hidden');
                    btn.classList.remove('hidden');
                 };
-                
-                utterance.onerror = (e) => {
-                    console.error("Speech Error:", e);
-                    loading.classList.add('hidden');
-                    btn.classList.remove('hidden');
-                };
-
-                // 播放前先取消之前的
-                window.speechSynthesis.cancel(); 
-                window.speechSynthesis.speak(utterance);
-
             } catch (e) {
-                console.error("TTS Setup Error:", e);
+                console.error("TTS Error:", e);
                 loading.classList.add('hidden');
                 btn.classList.remove('hidden');
-                // 靜默失敗或 alert
+                alert("語音功能暫時無法使用，請檢查 API Key 權限或配額"); 
             }
         }
 
@@ -1305,10 +1357,23 @@
             playAudioGeneric(lastStoryResponse, 'playStoryBtn', 'storyAudioLoading');
         }
 
-        // 下方是不再需要的舊版 pcmToWav，因為改用瀏覽器內建語音了，但保留不刪除避免錯誤引用，反正不會被呼叫到
         function pcmToWav(pcmData, sampleRate) {
-            // ... (保留舊程式碼結構以免報錯) ...
-            return new Blob([], { type: 'audio/wav' });
+            const header = new ArrayBuffer(44);
+            const view = new DataView(header);
+            writeString(view, 0, 'RIFF');
+            view.setUint32(4, 36 + pcmData.length, true);
+            writeString(view, 8, 'WAVE');
+            writeString(view, 12, 'fmt ');
+            view.setUint32(16, 16, true);
+            view.setUint16(20, 1, true); 
+            view.setUint16(22, 1, true); 
+            view.setUint32(24, sampleRate, true);
+            view.setUint32(28, sampleRate * 2, true);
+            view.setUint16(32, 2, true);
+            view.setUint16(34, 16, true); 
+            writeString(view, 36, 'data');
+            view.setUint32(40, pcmData.length, true);
+            return new Blob([header, pcmData], { type: 'audio/wav' });
         }
         function writeString(view, offset, string) {
             for (let i = 0; i < string.length; i++) view.setUint8(offset + i, string.charCodeAt(i));
@@ -1323,10 +1388,10 @@
             const recognition = new SpeechRecognition();
             recognition.lang = 'zh-TW';
             recognition.start();
-            
+           
             const input = document.getElementById('santaInput');
             input.placeholder = "正在聽你說話...";
-            
+           
             recognition.onresult = (event) => {
                 const transcript = event.results[0][0].transcript;
                 input.value = transcript;
@@ -1345,9 +1410,11 @@
             const textBox = document.getElementById('santaText');
             const audioBtn = document.getElementById('playAudioBtn');
             const audioLoading = document.getElementById('audioLoading');
-            
+           
             const userText = input.value.trim();
             if (!userText) return;
+            
+            if (!checkApiKey()) return;
 
             loadingBox.classList.remove('hidden');
             responseBox.classList.add('hidden');
@@ -1357,22 +1424,24 @@
             const reply = await callGemini(systemPrompt);
 
             lastSantaResponse = reply; 
-            
+           
             if (window.marked) {
                 textBox.innerHTML = marked.parse(reply);
             } else {
                 textBox.innerText = reply;
             }
-            
+           
             loadingBox.classList.add('hidden');
             responseBox.classList.remove('hidden');
             audioBtn.classList.remove('hidden'); 
             audioLoading.classList.add('hidden');
-            
+           
             input.value = '';
         }
-        
+       
         async function generateStory(character) {
+            if (!checkApiKey()) return;
+
             const responseBox = document.getElementById('storyResponse');
             const loadingBox = document.getElementById('storyLoading');
             const textBox = document.getElementById('storyText');
@@ -1392,7 +1461,7 @@
             } else {
                 textBox.innerText = story;
             }
-            
+           
             loadingBox.classList.add('hidden');
             responseBox.classList.remove('hidden');
             audioBtn.classList.remove('hidden'); 
@@ -1413,20 +1482,20 @@
             e.preventDefault();
             const source = e.currentTarget;
             const type = source.dataset.type;
-            
+           
             draggedElement = document.createElement('div');
             draggedElement.innerText = type;
             draggedElement.className = 'absolute text-6xl pointer-events-none z-50 drop-shadow-md'; 
-            
+           
             const clientX = e.touches ? e.touches[0].clientX : e.clientX;
             const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-            
+           
             draggedElement.style.left = clientX + 'px';
             draggedElement.style.top = clientY + 'px';
             draggedElement.style.transform = 'translate(-50%, -50%) scale(1.2)'; 
-            
+           
             document.body.appendChild(draggedElement);
-            
+           
             document.addEventListener('mousemove', moveDrag);
             document.addEventListener('mouseup', endDrag);
             document.addEventListener('touchmove', moveDrag, {passive: false});
@@ -1438,35 +1507,35 @@
             e.preventDefault();
             const clientX = e.touches ? e.touches[0].clientX : e.clientX;
             const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-            
+           
             draggedElement.style.left = clientX + 'px';
             draggedElement.style.top = clientY + 'px';
         }
 
         function endDrag(e) {
             if (!draggedElement) return;
-            
+           
             const clientX = e.changedTouches ? e.changedTouches[0].clientX : e.clientX;
             const clientY = e.changedTouches ? e.changedTouches[0].clientY : e.clientY;
-            
+           
             const treeRect = treeArea.getBoundingClientRect();
-            
+           
             if (clientX >= treeRect.left && clientX <= treeRect.right &&
                 clientY >= treeRect.top && clientY <= treeRect.bottom) {
-                
+               
                 const decoration = document.createElement('div');
                 decoration.innerText = draggedElement.innerText;
                 decoration.className = 'tree-decoration text-5xl drop-shadow-sm'; 
-                
+               
                 const relX = clientX - treeRect.left;
                 const relY = clientY - treeRect.top;
-                
+               
                 decoration.style.left = relX + 'px';
                 decoration.style.top = relY + 'px';
-                
+               
                 treeArea.appendChild(decoration);
             }
-            
+           
             draggedElement.remove();
             draggedElement = null;
             document.removeEventListener('mousemove', moveDrag);
@@ -1485,7 +1554,7 @@
             const element = document.getElementById('decorationGameArea');
             const palette = element.querySelector('.rounded-b-2xl') || element.querySelector('.rounded-b-3xl'); 
             if(palette) palette.style.display = 'none'; 
-            
+           
             try {
                 const canvas = await html2canvas(element, { scale: 2, backgroundColor: '#166534' });
                 if(palette) palette.style.display = 'flex';
@@ -1515,7 +1584,7 @@
             grid.innerHTML = '';
             matchedPairs = 0;
             flippedCards = [];
-            
+           
             if(memoryTimerInterval) clearInterval(memoryTimerInterval);
             memoryTimeLeft = 60;
             document.getElementById('memoryTimer').innerText = memoryTimeLeft;
@@ -1523,7 +1592,7 @@
 
             let deck = [...memoryIcons, ...memoryIcons];
             deck.sort(() => 0.5 - Math.random());
-            
+           
             deck.forEach((icon, index) => {
                 const card = document.createElement('div');
                 card.className = 'memory-card';
@@ -1540,7 +1609,7 @@
             if(memoryTimerInterval) clearInterval(memoryTimerInterval);
             memoryTimeLeft = 60;
             document.getElementById('memoryTimer').innerText = memoryTimeLeft;
-            
+           
             memoryTimerInterval = setInterval(() => {
                 memoryTimeLeft--;
                 document.getElementById('memoryTimer').innerText = memoryTimeLeft;
@@ -1551,21 +1620,21 @@
                 }
             }, 1000);
         }
-        
+       
         function flipMemoryCard(card) {
             if (!document.getElementById('memoryOverlay').classList.contains('hidden')) return;
             if (memoryTimeLeft <= 0) return; 
             if (card.classList.contains('flipped') || card.classList.contains('matched') || flippedCards.length >= 2) return;
-            
+           
             card.classList.add('flipped');
             card.textContent = card.dataset.icon; 
             flippedCards.push(card);
-            
+           
             if (flippedCards.length === 2) {
                 setTimeout(checkMatch, 800);
             }
         }
-        
+       
         function checkMatch() {
             const [card1, card2] = flippedCards;
             if (card1.dataset.icon === card2.dataset.icon) {
@@ -1611,7 +1680,7 @@
             document.getElementById('score').innerText = score;
             catchTimeLeft = 60;
             document.getElementById('catchTimer').innerText = catchTimeLeft;
-            
+           
             catchTimerInterval = setInterval(() => {
                 catchTimeLeft--;
                 document.getElementById('catchTimer').innerText = catchTimeLeft;
@@ -1692,12 +1761,10 @@
         let isPainting = false;
         let currentColor = '#EF4444';
         let brushSize = 5;
-        // 移除原本的圖片物件 let santaImgObj = new Image();
 
         function initPaint() {
             pCtx.lineCap = 'round';
             pCtx.lineJoin = 'round';
-            
             // 直接開始繪製基本形狀，不需要等待圖片載入
             clearPaint();
         }
@@ -1706,7 +1773,7 @@
             // 1. 清除畫布填白
             pCtx.fillStyle = '#FFFFFF';
             pCtx.fillRect(0, 0, pCanvas.width, pCanvas.height);
-            
+           
             // 2. 繪製聖誕老人輪廓 (由基本幾何圖形組成)
             pCtx.save(); // 儲存當前狀態
             pCtx.strokeStyle = '#000000'; // 黑色輪廓
@@ -1729,7 +1796,7 @@
             pCtx.rect(135, 270, 130, 30);
             pCtx.fill();
             pCtx.stroke();
-            
+           
             // 皮帶扣 (Buckle) - 小矩形
             pCtx.beginPath();
             pCtx.rect(185, 270, 30, 30);
@@ -1771,13 +1838,13 @@
             pCtx.closePath();
             pCtx.fill();
             pCtx.stroke();
-            
+           
             // 帽緣 (Hat brim) - 橢圓
             pCtx.beginPath();
             pCtx.ellipse(200, 130, 60, 15, 0, 0, Math.PI * 2);
             pCtx.fill();
             pCtx.stroke();
-            
+           
             // 毛球 (Pom-pom) - 圓形
             pCtx.beginPath();
             pCtx.arc(200, 50, 15, 0, Math.PI * 2);
@@ -1814,7 +1881,7 @@
             pCtx.beginPath();
             pCtx.arc(215, 155, 4, 0, Math.PI * 2); // 右眼
             pCtx.fill();
-            
+           
             pCtx.fillStyle = '#FFCCCB'; // 粉紅鼻子
             pCtx.beginPath();
             pCtx.arc(200, 165, 7, 0, Math.PI * 2); // 鼻子
@@ -1828,7 +1895,7 @@
         pCanvas.addEventListener('mousemove', drawPaint);
         pCanvas.addEventListener('mouseup', stopPaint);
         pCanvas.addEventListener('mouseout', stopPaint);
-        
+       
         pCanvas.addEventListener('touchstart', (e) => {
             e.preventDefault();
             startPaint(e.touches[0]);
