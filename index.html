@@ -756,7 +756,7 @@
                 </div>
                
                 <div class="relative bg-white/10 rounded-3xl p-4" style="height: 600px; touch-action: none;" id="decorationGameArea">
-                    <div class="absolute left-1/2 transform -translate-x-1/2 bottom-40 w-72 h-96 flex justify-center items-end" id="treeTargetArea">
+                    <div class="absolute left-1/2 transform -translate-x-1/2 bottom-40 w-72 h-96 flex justify-center items-end border-2 border-dashed border-yellow-300/50 rounded-xl" id="treeTargetArea">
                         <div class="w-16 h-20 bg-yellow-900 mx-auto"></div>
                         <div class="absolute bottom-20 flex flex-col items-center">
                             <div class="w-0 h-0 border-l-[120px] border-r-[120px] border-b-[120px] border-l-transparent border-r-transparent border-b-green-600 -mb-12"></div>
@@ -1525,7 +1525,8 @@
            
             draggedElement = document.createElement('div');
             draggedElement.innerText = type;
-            draggedElement.className = 'absolute text-6xl pointer-events-none z-50 drop-shadow-md'; 
+            // 修正重點：使用 fixed 定位，避免滾動頁面時座標跑掉
+            draggedElement.className = 'fixed text-6xl pointer-events-none z-[100] drop-shadow-md'; 
            
             const clientX = e.touches ? e.touches[0].clientX : e.clientX;
             const clientY = e.touches ? e.touches[0].clientY : e.clientY;
