@@ -1379,28 +1379,68 @@
             for (let i = 0; i < string.length; i++) view.setUint8(offset + i, string.charCodeAt(i));
         }
 
+        let recognition = null; // 在外部儲存實例
+
         function startListening() {
+            // 檢查瀏覽器支援
             if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-                alert("您的瀏覽器不支援語音輸入，請使用 Chrome！");
+                alert("抱歉，您的瀏覽器不支援語音輸入功能。\n請使用 Google Chrome 瀏覽器試試看！");
                 return;
             }
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            const recognition = new SpeechRecognition();
-            recognition.lang = 'zh-TW';
-            recognition.start();
-           
-            const input = document.getElementById('santaInput');
-            input.placeholder = "正在聽你說話...";
-           
-            recognition.onresult = (event) => {
-                const transcript = event.results[0][0].transcript;
-                input.value = transcript;
-                input.placeholder = "想跟聖誕老公公說什麼？";
-                askSanta(); 
-            };
-            recognition.onerror = () => {
-                input.placeholder = "聽不清楚，請再試一次";
-            };
+
+            // 初始化 (如果還沒有)
+            if (!recognition) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                recognition = new SpeechRecognition();
+                recognition.lang = 'zh-TW';
+                recognition.continuous = false;
+                recognition.interimResults = false;
+
+                recognition.onstart = function() {
+                    const input = document.getElementById('santaInput');
+                    input.placeholder = "🎤 正在聽你說話...";
+                };
+
+                recognition.onend = function() {
+                    const input = document.getElementById('santaInput');
+                    // 如果輸入框是空的且仍顯示正在聽，才復原提示文字
+                    if(input.placeholder === "🎤 正在聽你說話...") {
+                         input.placeholder = "想跟聖誕老公公說什麼？";
+                    }
+                };
+
+                recognition.onresult = (event) => {
+                    const transcript = event.results[0][0].transcript;
+                    const input = document.getElementById('santaInput');
+                    input.value = transcript;
+                    setTimeout(() => askSanta(), 500); // 稍微停頓後自動送出
+                };
+
+                recognition.onerror = (event) => {
+                    const input = document.getElementById('santaInput');
+                    console.error("Speech recognition error", event.error);
+                    
+                    let msg = "聽不清楚，請再試一次";
+                    if (event.error === 'not-allowed') {
+                        msg = "請允許麥克風權限才能使用語音輸入喔！(請檢查瀏覽器網址列的鎖頭圖示)";
+                        alert(msg); // 跳出視窗提醒權限問題
+                    } else if (event.error === 'no-speech') {
+                        msg = "沒聽到聲音，請再大聲一點！";
+                    } else if (event.error === 'network') {
+                        msg = "網路連線不穩，語音辨識失敗。";
+                    }
+                    
+                    input.placeholder = msg;
+                };
+            }
+
+            // 啟動聆聽
+            try {
+                recognition.start();
+            } catch (e) {
+                // 如果已經啟動，忽略錯誤
+                console.warn("Recognition already started or error:", e);
+            }
         }
 
         async function askSanta() {
